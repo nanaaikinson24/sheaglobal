@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 91 91">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-4 {
+        fill: none;
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #43c13e;
+      }
+
+      .cls-1 {
+        stroke-width: 2px;
+      }
+
+      .cls-2 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 2.133px;
+      }
+
+      .cls-3 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="Group_41" data-name="Group 41" transform="translate(-139 -1925)">
+    <g id="Group_13" data-name="Group 13" transform="translate(0 608)">
+      <g id="Ellipse_9" data-name="Ellipse 9" class="cls-1" transform="translate(139 1317)">
+        <circle class="cls-3" cx="45.5" cy="45.5" r="45.5"/>
+        <circle class="cls-4" cx="45.5" cy="45.5" r="44.5"/>
+      </g>
+      <g id="Group_12" data-name="Group 12" transform="translate(152.954 1334.956)">
+        <path id="Path_221" data-name="Path 221" class="cls-2" d="M27.6,13.5S-1.2,27.3,8,53.2"/>
+        <path id="Path_222" data-name="Path 222" class="cls-2" d="M3.1,36.8s-7.8-16,7-28.6S43.9,3,47,5.3s11.9,6.4,13.8,18.1c0,0,0-4.9-9.7-5.5-9.8-.5-15.8,12.5-24.7,20.5-8.8,8-19.9,1.2-19.9,1.2"/>
+        <path id="Path_223" data-name="Path 223" class="cls-2" d="M46.1,18.9s14,3.3,13,14.5c0,0,3.1-4.8,1.6-10"/>
+      </g>
+    </g>
+  </g>
+</svg>
