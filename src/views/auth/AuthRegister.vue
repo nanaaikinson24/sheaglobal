@@ -55,76 +55,75 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    export default {
-        name: 'AuthRegister',
-        data() {
-            return {
-                remail: '',
-                rpassword: '',
-                cpassword: '',
-                firstname: '',
-                lastname: ''
-            }
-        },
-        methods: {
-            register(e) {
-                var btn = e.currentTarget;
-                $('.s-v-e').remove();
+import axios from "axios";
+export default {
+  name: "AuthRegister",
+  data() {
+    return {
+      remail: "",
+      rpassword: "",
+      cpassword: "",
+      firstname: "",
+      lastname: ""
+    };
+  },
+  methods: {
+    register(e) {
+      var btn = e.currentTarget;
+      $(".s-v-e").remove();
 
-                this.$validator.validateAll().then((result) => {
-                    if (result) {
-                        let params = new URLSearchParams();
-                        params.append('firstname', this.firstname);
-                        params.append('lastname', this.lastname);
-                        params.append('remail', this.remail);
-                        params.append('rpassword', this.rpassword);
-                        params.append('cpassword', this.cpassword);
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          let params = new URLSearchParams();
+          params.append("firstname", this.firstname);
+          params.append("lastname", this.lastname);
+          params.append("remail", this.remail);
+          params.append("rpassword", this.rpassword);
+          params.append("cpassword", this.cpassword);
 
-                        btn.classList.add('is-loading', 'is-loading-sm');
-                        btn.setAttribute('disabled', '');
+          btn.classList.add("is-loading", "is-loading-sm");
+          btn.setAttribute("disabled", "");
 
-                        axios.post(APIURL + 'account/create', params)
-                        .then((response) => {
-                            btn.classList.remove('is-loading', 'is-loading-sm');
-                            btn.removeAttribute('disabled');
+          axios
+            .post(APIURL + "account/create", params)
+            .then(response => {
+              btn.classList.remove("is-loading", "is-loading-sm");
+              btn.removeAttribute("disabled");
 
-                            let res = response.data;
+              let res = response.data;
 
-                            if (res.status == 200) {
-                                this.firstname = '';
-                                this.lastname = '';
-                                this.remail = '';
-                                this.rpassword = '';
-                                this.cpassword = '';
-                                this.$validator.reset();
+              if (res.status == 200) {
+                this.firstname = "";
+                this.lastname = "";
+                this.remail = "";
+                this.rpassword = "";
+                this.cpassword = "";
+                this.$validator.reset();
 
-                                this.$swal('', res.msg, 'success');
-                            }
-                            else {
-                                if (res.status == 403) {
-                                    $.each(res.errors, (k, v) => {
-                                        $('#' + k).after(v);
-                                    })
-                                }
-                                else {
-                                    this.firstname = '';
-                                    this.lastname = '';
-                                    this.remail = '';
-                                    this.rpassword = '';
-                                    this.cpassword = '';
-                                    this.$validator.reset();
+                this.$swal("", res.msg, "success");
+              } else {
+                if (res.status == 403) {
+                  $.each(res.errors, (k, v) => {
+                    $("#" + k).after(v);
+                  });
+                } else {
+                  this.firstname = "";
+                  this.lastname = "";
+                  this.remail = "";
+                  this.rpassword = "";
+                  this.cpassword = "";
+                  this.$validator.reset();
 
-                                    this.$swal('', res.msg, 'error');
-                                }
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        })
-                    }
-                });
-            }
+                  this.$swal("", res.msg, "error");
+                }
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         }
+      });
     }
+  }
+};
 </script>

@@ -25,7 +25,7 @@
 
 <script>
 export default {
-    name: 'OrderItem',
-    props: ['orderItem']
+  name: "OrderItem",
+  props: ["orderItem"]
 };
 </script>

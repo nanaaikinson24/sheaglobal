@@ -54,94 +54,92 @@
 </template>
 
 <script>
-let _ = require('lodash');
+let _ = require("lodash");
 export default {
-    name: 'ShoppingCartItem',
-    props: ['cartItem', 'itemMask', 'arrIndex'],
-    data() {
-        return {
-            quantity: this.cartItem.quantity,
-            itemId: this.cartItem.mask
-        };
+  name: "ShoppingCartItem",
+  props: ["cartItem", "itemMask", "arrIndex"],
+  data() {
+    return {
+      quantity: this.cartItem.quantity,
+      itemId: this.cartItem.mask
+    };
+  },
+
+  methods: {
+    //Increase quantity
+    increaseQuantity(e, mask) {
+      this.quantity += 1;
+      var btn = e.currentTarget;
+      var item = {
+        mask: mask,
+        quantity: this.quantity
+      };
+
+      $(".site-update-cart").show();
+      setTimeout(() => {
+        $(".site-update-cart").hide();
+        this.$store.commit("updateCartItem", item);
+      }, 500);
     },
 
-    methods: {
-        //Increase quantity
-        increaseQuantity(e, mask) {
-            this.quantity += 1;
-            var btn = e.currentTarget;
-            var item = {
-                mask: mask,
-                quantity: this.quantity
-            };
-
-            $('.site-update-cart').show();
-            setTimeout(() => {
-                $('.site-update-cart').hide();
-                this.$store.commit('updateCartItem', item);
-            }, 500);
-        },
-
-        //Decrease quantity
-        decreaseQuantity(e, mask) {
-            this.quantity -= 1;
-            var btn = e.currentTarget;
-            var item = {
-                mask: mask,
-                quantity: this.quantity
-            };
-            $('.site-update-cart').show();
-            setTimeout(() => {
-                $('.site-update-cart').hide();
-                this.$store.commit('updateCartItem', item);
-            }, 500);
-        },
-
-        //Remove from cart
-        removeFromCart(index) {
-            $('.site-remove-cart').show();
-            setTimeout(() => {
-                $('.site-remove-cart').hide();
-                this.$store.commit('removeFromCart', index);
-            }, 500);
-        },
-
-        isNumberKey(e) {
-            let character;
-            let charCode = e.which ? e.which : e.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                e.preventDefault();
-            }
-
-            this.debouncedGetQuantity();
-            return true;
-        },
-
-        //Get quantity
-        getQuantity() {
-            let quantity = this.quantity;
-            quantity = String(quantity);
-            if (parseInt(quantity.charAt(0)) < 1 || quantity == '') {
-                this.quantity = this.$store.getters.getSpecificItem(
-                    this.itemId
-                );
-                this.$store.commit('updateCartItem', this.quantity);
-                return;
-            }
-            var item = {
-                mask: this.itemId,
-                quantity: this.quantity
-            };
-
-            $('.site-update-cart').show();
-            setTimeout(() => {
-                $('.site-update-cart').hide();
-                this.$store.commit('updateCartItem', item);
-            }, 500);
-        }
+    //Decrease quantity
+    decreaseQuantity(e, mask) {
+      this.quantity -= 1;
+      var btn = e.currentTarget;
+      var item = {
+        mask: mask,
+        quantity: this.quantity
+      };
+      $(".site-update-cart").show();
+      setTimeout(() => {
+        $(".site-update-cart").hide();
+        this.$store.commit("updateCartItem", item);
+      }, 500);
     },
-    created() {
-        this.debouncedGetQuantity = _.debounce(this.getQuantity, 500);
+
+    //Remove from cart
+    removeFromCart(index) {
+      $(".site-remove-cart").show();
+      setTimeout(() => {
+        $(".site-remove-cart").hide();
+        this.$store.commit("removeFromCart", index);
+      }, 500);
+    },
+
+    isNumberKey(e) {
+      let character;
+      let charCode = e.which ? e.which : e.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        e.preventDefault();
+      }
+
+      this.debouncedGetQuantity();
+      return true;
+    },
+
+    //Get quantity
+    getQuantity() {
+      let quantity = this.quantity;
+      quantity = String(quantity);
+      if (parseInt(quantity.charAt(0)) < 1 || quantity == "") {
+        this.quantity = this.$store.getters.getSpecificItem(this.itemId);
+        this.$store.commit("updateCartItem", this.quantity);
+        return;
+      }
+      var item = {
+        mask: this.itemId,
+        quantity: this.quantity
+      };
+
+      $(".site-update-cart").show();
+      setTimeout(() => {
+        $(".site-update-cart").hide();
+        this.$store.commit("updateCartItem", item);
+      }, 500);
     }
+  },
+  created() {
+    this.debouncedGetQuantity = _.debounce(this.getQuantity, 500);
+  }
 };
 </script>

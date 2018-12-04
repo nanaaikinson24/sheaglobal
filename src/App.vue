@@ -58,54 +58,54 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-var favicon = require('./assets/img/sheaLogo.png');
-var loadingIcon = require('./assets/icons/tail-spin.svg');
+import { mapActions } from "vuex";
+var favicon = require("./assets/img/sheaLogo.png");
+var loadingIcon = require("./assets/icons/tail-spin.svg");
 
-import Header from './components/templates/Header';
-import Footer from './components/templates/Footer';
-import BackToTop from './components/BackToTop';
+import Header from "./components/templates/Header";
+import Footer from "./components/templates/Footer";
+import BackToTop from "./components/BackToTop";
 
-let moment = require('moment');
+let moment = require("moment");
 
 export default {
-    name: 'App',
-    components: {
-        appHeader: Header,
-        appFooter: Footer,
-        toTop: BackToTop
-    },
-    data() {
-        return {
-            loadingIcon
-        };
-    },
-    metaInfo: {
-        // if no subcomponents specify a metaInfo.title, this title will be used
-        title: 'Shea Global',
-        // all titles will be injected into this template
-        titleTemplate: '%s | Shea Global',
-        link: [{ rel: 'icon', href: favicon }]
-    },
-    methods: {
-        ...mapActions([
-            'CHECK_FOR_CART_STORAGE',
-            'CHECK_FOR_USER_STORAGE',
-            'SET_USER_DATA_GLOBAL'
-        ])
-    },
-    created() {
-        this.CHECK_FOR_CART_STORAGE();
-        this.CHECK_FOR_USER_STORAGE();
-        this.SET_USER_DATA_GLOBAL();
-    }
+  name: "App",
+  components: {
+    appHeader: Header,
+    appFooter: Footer,
+    toTop: BackToTop
+  },
+  data() {
+    return {
+      loadingIcon
+    };
+  },
+  metaInfo: {
+    // if no subcomponents specify a metaInfo.title, this title will be used
+    title: "Shea Global",
+    // all titles will be injected into this template
+    titleTemplate: "%s | Shea Global",
+    link: [{ rel: "icon", href: favicon }]
+  },
+  methods: {
+    ...mapActions([
+      "CHECK_FOR_CART_STORAGE",
+      "CHECK_FOR_USER_STORAGE",
+      "SET_USER_DATA_GLOBAL"
+    ])
+  },
+  created() {
+    this.CHECK_FOR_CART_STORAGE();
+    this.CHECK_FOR_USER_STORAGE();
+    this.SET_USER_DATA_GLOBAL();
+  }
 };
 </script>
 
 <style lang="scss">
-@import '../node_modules/bootstrap/scss/bootstrap';
-@import './assets/css/owl.carousel.min.css';
-@import './assets/css/owl.theme.default.min.css';
-@import './assets/fonts.css';
-@import './assets/themify-icons.css';
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "./assets/css/owl.carousel.min.css";
+@import "./assets/css/owl.theme.default.min.css";
+@import "./assets/fonts.css";
+@import "./assets/themify-icons.css";
 </style>

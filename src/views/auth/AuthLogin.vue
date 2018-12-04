@@ -40,79 +40,85 @@
 </template>
 
 <script>
-    import axios from 'axios'
-    export default {
-        name: 'AuthLogin',
-        data() {
-            return {
-                email: '',
-                password: ''
-            }
-        },
-        methods: {
-            login(e) {
-                var btn = e.currentTarget;
+import axios from "axios";
+export default {
+  name: "AuthLogin",
+  data() {
+    return {
+      email: "",
+      password: ""
+    };
+  },
+  methods: {
+    login(e) {
+      var btn = e.currentTarget;
 
-                this.$validator.validateAll().then((result) => {
-                    if (result) {
-                        let params = new URLSearchParams();
-                        params.append('email', this.email);
-                        params.append('password', this.password);
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          let params = new URLSearchParams();
+          params.append("email", this.email);
+          params.append("password", this.password);
 
-                        btn.classList.add('is-loading', 'is-loading-sm');
-                        btn.setAttribute('disabled', '');
+          btn.classList.add("is-loading", "is-loading-sm");
+          btn.setAttribute("disabled", "");
 
-                        axios.post(APIURL + 'account/signin', params)
-                        .then((response) => {
-                            btn.classList.remove('is-loading', 'is-loading-sm');
-                            btn.removeAttribute('disabled');
+          axios
+            .post(APIURL + "account/signin", params)
+            .then(response => {
+              btn.classList.remove("is-loading", "is-loading-sm");
+              btn.removeAttribute("disabled");
 
-                            let res = response.data;
+              let res = response.data;
 
-                            if (res.status == 200) {
-                                let userData = {
-                                    'firstname': res.data.firstname,
-                                    'lastname': res.data.lastname,
-                                    'email': res.data.email,
-                                    'access_token': res.data.access_token,
-                                    'mask': res.data.mask,
-                                }
-                                this.$store.dispatch('SET_USER_DATA', userData);
-                                window.localStorage.setItem('userData', JSON.stringify(userData));
-                                this.$router.replace('/account/detail');
-                            }
-                            else {
-                                if (res.status == 403) {
-                                    $.each(res.errors, function(k, v) {
-                                        $('#' + k).after(v);
-                                    })
-                                }
-                                else if(res.status == 204) {
-                                    $('.loginMsg').html('<p class="text-danger text-center" id="loginMsg">'+res.msg+'</p>');
-                                    setTimeout(() => {
-                                        $('#loginMsg').fadeOut(function () {
-                                            $(this).remove();
-                                        })
-                                    }, 5000);
-                                }
-                                else {
-                                    let html = `<p class="text-info" id="loginMsg">${res.msg}. Click here to </p>`; 
-                                    $('.loginMsg').html(html);
-                                    setTimeout(() => {
-                                        $('#loginMsg').fadeOut(function () {
-                                            $(this).remove();
-                                        })
-                                    }, 5000);
-                                }
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        })
-                    }
-                })
-                
-            }
+              if (res.status == 200) {
+                let userData = {
+                  firstname: res.data.firstname,
+                  lastname: res.data.lastname,
+                  email: res.data.email,
+                  access_token: res.data.access_token,
+                  mask: res.data.mask
+                };
+                this.$store.dispatch("SET_USER_DATA", userData);
+                window.localStorage.setItem(
+                  "userData",
+                  JSON.stringify(userData)
+                );
+                this.$router.replace("/account/detail");
+              } else {
+                if (res.status == 403) {
+                  $.each(res.errors, function(k, v) {
+                    $("#" + k).after(v);
+                  });
+                } else if (res.status == 204) {
+                  $(".loginMsg").html(
+                    '<p class="text-danger text-center" id="loginMsg">' +
+                      res.msg +
+                      "</p>"
+                  );
+                  setTimeout(() => {
+                    $("#loginMsg").fadeOut(function() {
+                      $(this).remove();
+                    });
+                  }, 5000);
+                } else {
+                  let html = `<p class="text-info" id="loginMsg">${
+                    res.msg
+                  }. Click here to </p>`;
+                  $(".loginMsg").html(html);
+                  setTimeout(() => {
+                    $("#loginMsg").fadeOut(function() {
+                      $(this).remove();
+                    });
+                  }, 5000);
+                }
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         }
+      });
     }
+  }
+};
 </script>

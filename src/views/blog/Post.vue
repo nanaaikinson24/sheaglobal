@@ -108,121 +108,122 @@
 </template>
 
 <script>
-    var aboutImg = require('../../assets/img/about03.jpg');
-    import TopHeroBanner from '../../components/TopHeroBanner.vue';
-    import axios from 'axios';
+var aboutImg = require("../../assets/img/about03.jpg");
+import TopHeroBanner from "../../components/TopHeroBanner.vue";
+import axios from "axios";
 
-    export default {
-        components: {heroBanner: TopHeroBanner},
-        name: 'Post',
-        data() {
-            return {
-                postData: '',
-                postTitle: '',
-                bannerTitle: '',
-                postComments: [],
-                aboutImg: aboutImg,
-                userComment: {name: '', email: '', comment: ''},
-                contentLoaded: true
+export default {
+  components: { heroBanner: TopHeroBanner },
+  name: "Post",
+  data() {
+    return {
+      postData: "",
+      postTitle: "",
+      bannerTitle: "",
+      postComments: [],
+      aboutImg: aboutImg,
+      userComment: { name: "", email: "", comment: "" },
+      contentLoaded: true
+    };
+  },
+  metaInfo() {
+    return {
+      title: this.postTitle
+    };
+  },
+  methods: {
+    // Fetch post data
+    fetchPostData() {
+      var dash = this.$route.params.blogdash;
+      var mask = this.$route.params.blogmask;
+
+      if (dash && mask) {
+        this.contentLoaded = false;
+
+        axios
+          .get(APIURL + "blog/" + dash + "/" + mask)
+          .then(response => {
+            var res = response.data;
+
+            if (res.status == 200) {
+              this.contentLoaded = true;
+              this.postData = res.data;
+              this.postComments = res.data.comments;
+              this.bannerTitle = this.capitalizeEachWord(res.data.title);
+            } else {
+              this.$router.push({ name: "error404" });
             }
-        },
-        metaInfo () {
-            return {
-                title: this.postTitle
-            }
-        },
-        methods: {
-            // Fetch post data
-            fetchPostData() {
-                var dash = this.$route.params.blogdash;
-                var mask = this.$route.params.blogmask;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.$router.push({ name: "error404s" });
+      }
+    },
 
-                if (dash && mask) 
-                {
-                    this.contentLoaded = false;
+    //Add post comment
+    addComment(e) {
+      var btn = e.currentTarget;
+      var sve = document.querySelector(".s-v-e");
+      if (sve) {
+        sve.remove();
+      }
+      this.$validator
+        .validateAll()
+        .then(result => {
+          if (result) {
+            var mask = this.$route.params.blogmask;
+            var requestData = JSON.stringify(this.userComment);
+            btn.innerHtml = '<span class="fa fa-spin fa-spinner fa-fw"></span>';
 
-                    axios.get(APIURL + 'blog/' + dash + '/' + mask).then((response) => {
-                        var res = response.data;
-
-                        if (res.status == 200) 
-                        {
-                            this.contentLoaded = true;
-                            this.postData = res.data;
-                            this.postComments = res.data.comments;
-                            this.bannerTitle = this.capitalizeEachWord(res.data.title);
-                        }
-                        else {
-                            this.$router.push({name: 'error404'});
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-                }
-                else {
-                    this.$router.push({ name: 'error404s'});
-                }
-            },
-
-            //Add post comment
-            addComment(e) {
-                var btn = e.currentTarget;
-                var sve = document.querySelector('.s-v-e');
-                if (sve) {
-                    sve.remove();
-                }
-                this.$validator.validateAll().then(result => {
-                    if (result) {
-                        var mask = this.$route.params.blogmask;
-                        var requestData = JSON.stringify(this.userComment);
-                        btn.innerHtml = '<span class="fa fa-spin fa-spinner fa-fw"></span>';
-
-                        axios.post(APIURL + 'addcomment/' + mask, requestData).then((response) => {
-                            var res = response.data;
-                            if (res.status == 200) {
-                                btn.innerHtml = 'Post Comment';
-                                this.userComment = {email: '', name: '', comment: ''};
-                                this.postComments.push(res.comment);
-                                this.$validator.reset();
-                            }
-                            else {
-                                if (res.status == 412) {
-                                    res.error.forEach((k, v) => {
-                                        document.querySelector('#'+ k).after(v);
-                                    })
-                                }
-                                else {
-                                    var html = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            axios
+              .post(APIURL + "addcomment/" + mask, requestData)
+              .then(response => {
+                var res = response.data;
+                if (res.status == 200) {
+                  btn.innerHtml = "Post Comment";
+                  this.userComment = { email: "", name: "", comment: "" };
+                  this.postComments.push(res.comment);
+                  this.$validator.reset();
+                } else {
+                  if (res.status == 412) {
+                    res.error.forEach((k, v) => {
+                      document.querySelector("#" + k).after(v);
+                    });
+                  } else {
+                    var html = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
                                                     ${res.msg}
                                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>`;
-                                    document.querySelector('.commentFormMsg').classList.add('mb-3');
-                                    document.querySelector('.commentFormMsg').innerHtml = html;
-                                }
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-                
-            },
+                    document
+                      .querySelector(".commentFormMsg")
+                      .classList.add("mb-3");
+                    document.querySelector(".commentFormMsg").innerHtml = html;
+                  }
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
 
-            capitalizeEachWord(str) {
-                var lower = String(str).toLowerCase();
-                return lower.replace(/(^| )(\w)/g, function(x) {
-                    return x.toUpperCase();
-                });
-            }
-        },
-        created() {
-            this.fetchPostData();
-        }
+    capitalizeEachWord(str) {
+      var lower = String(str).toLowerCase();
+      return lower.replace(/(^| )(\w)/g, function(x) {
+        return x.toUpperCase();
+      });
     }
+  },
+  created() {
+    this.fetchPostData();
+  }
+};
 </script>

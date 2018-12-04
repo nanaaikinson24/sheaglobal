@@ -41,24 +41,24 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    export default {
-        name: 'ProductsSidebar',
-        data() {
-           return {
-               categoryData: []
-           }
-        },
-        methods: {
-            fetchCategories() {
-                var self = this;
-                $.getJSON(APIURL + 'categories', function(data) {
-                    self.categoryData = data;
-                });    
-            }
-        },
-        mounted() {
-            this.fetchCategories();
-        }
+import axios from "axios";
+export default {
+  name: "ProductsSidebar",
+  data() {
+    return {
+      categoryData: []
+    };
+  },
+  methods: {
+    fetchCategories() {
+      var self = this;
+      $.getJSON(APIURL + "categories", function(data) {
+        self.categoryData = data;
+      });
     }
+  },
+  mounted() {
+    this.fetchCategories();
+  }
+};
 </script>

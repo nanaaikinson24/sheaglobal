@@ -24,25 +24,24 @@
 </template>
 
 <script>
-    var aboutImg = require('../assets/img/about03.jpg');
-    import Callback from '../components/Callback';
-    import TopHeroBanner from '../components/TopHeroBanner.vue';
+var aboutImg = require("../assets/img/about03.jpg");
+import Callback from "../components/Callback";
+import TopHeroBanner from "../components/TopHeroBanner.vue";
 
-    export default {
-        components: {appCallback: Callback, heroBanner: TopHeroBanner},
-        name: 'About',
-        metaInfo: {
-            title: 'About'
-        },
-        data() {
-            return {
-                bannerTitle: 'About Us',
-                aboutImg: aboutImg
-            }
-        }
-    }
+export default {
+  components: { appCallback: Callback, heroBanner: TopHeroBanner },
+  name: "About",
+  metaInfo: {
+    title: "About"
+  },
+  data() {
+    return {
+      bannerTitle: "About Us",
+      aboutImg: aboutImg
+    };
+  }
+};
 </script>
 
 <style>
-
 </style>

@@ -23,10 +23,8 @@
 </template>
 
 <script>
-    export default {
-        name: 'Login',
-        props: [
-            'loginEmail', 'loginPassword', 'loginMsg'
-        ]
-    }
+export default {
+  name: "Login",
+  props: ["loginEmail", "loginPassword", "loginMsg"]
+};
 </script>

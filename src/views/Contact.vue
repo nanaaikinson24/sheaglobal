@@ -102,93 +102,93 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import TopHeroBanner from '../components/TopHeroBanner.vue';
+import axios from "axios";
+import TopHeroBanner from "../components/TopHeroBanner.vue";
 
-    export default {
-        components: {heroBanner: TopHeroBanner},
-        name: 'Contact',
-        data() {
-            return {
-                contactData: {name: '', message: '', email: ''},
-                bannerTitle: 'Contact Us'
-            }
-        },
-        metaInfo: {
-            title: 'Contact Us'
-        },
-        methods: {
-            contactFormSubmitFxn(e) {
-                var btn = e.currentTarget;
-                var sve = document.querySelector('.s-v-e');
-                if (sve) sve.remove();
+export default {
+  components: { heroBanner: TopHeroBanner },
+  name: "Contact",
+  data() {
+    return {
+      contactData: { name: "", message: "", email: "" },
+      bannerTitle: "Contact Us"
+    };
+  },
+  metaInfo: {
+    title: "Contact Us"
+  },
+  methods: {
+    contactFormSubmitFxn(e) {
+      var btn = e.currentTarget;
+      var sve = document.querySelector(".s-v-e");
+      if (sve) sve.remove();
 
-                this.$validator.validateAll().then(result => {
-                    if (result) {
-                        var contactFormData = {
-                            name: this.contactData.name,
-                            email: this.contactData.email,
-                            message: this.contactData.message
-                        };
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          var contactFormData = {
+            name: this.contactData.name,
+            email: this.contactData.email,
+            message: this.contactData.message
+          };
 
-                        contactFormData = JSON.stringify(contactFormData);
+          contactFormData = JSON.stringify(contactFormData);
 
-                        axios.interceptors.request.use(function (arg) {
-                            btn.innerHtml = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
-                            return arg;
-                        });
+          axios.interceptors.request.use(function(arg) {
+            btn.innerHtml = '<i class="fa fa-spinner fa-spin fa-fw"></i>';
+            return arg;
+          });
 
-                        axios.post(APIURL + 'contact', contactFormData).then(response => {
-                            var res = response.data;
-                            btn.innerHTML = 'Submit';
-                            if (res.status === true) {
-                                var responseMsg = document.querySelector('.callbackFromMsg');
-                                var html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+          axios
+            .post(APIURL + "contact", contactFormData)
+            .then(response => {
+              var res = response.data;
+              btn.innerHTML = "Submit";
+              if (res.status === true) {
+                var responseMsg = document.querySelector(".callbackFromMsg");
+                var html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
                                                 ${res.msg}
                                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>`;
-                                responseMsg.classList.add('my-3');
-                                responseMsg.innerHTML = html;
+                responseMsg.classList.add("my-3");
+                responseMsg.innerHTML = html;
 
-                                this.contactData.name = '';
-                                this.contactData.email = '';
-                                this.contactData.message = '';
+                this.contactData.name = "";
+                this.contactData.email = "";
+                this.contactData.message = "";
 
-                                this.$validator.reset()
-
-                            }
-                            else {
-                                if (res.status === 'validation_errors') {
-                                    res.errors.forEach((k, v) => {
-                                        document.querySelector(`#${k}`).appendChild(v);
-                                    }); 
-                                }
-                                else {
-                                    var responseMsg = document.querySelector('.callbackFromMsg');
-                                    var html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                this.$validator.reset();
+              } else {
+                if (res.status === "validation_errors") {
+                  res.errors.forEach((k, v) => {
+                    document.querySelector(`#${k}`).appendChild(v);
+                  });
+                } else {
+                  var responseMsg = document.querySelector(".callbackFromMsg");
+                  var html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
                                                 ${res.msg}
                                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>`;
-                                    responseMsg.classList.add('my-3');
-                                    responseMsg.innerHTML = html;
+                  responseMsg.classList.add("my-3");
+                  responseMsg.innerHTML = html;
 
-                                    this.contactData.name = '';
-                                    this.contactData.email = '';
-                                    this.callbackData.message = '';
+                  this.contactData.name = "";
+                  this.contactData.email = "";
+                  this.callbackData.message = "";
 
-                                    this.$validator.reset()
-                                }
-                            }
-                        }).catch(err => {
-                            console.log(err);
-                        })
-                    }
-                })
-            }
+                  this.$validator.reset();
+                }
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         }
+      });
     }
+  }
+};
 </script>

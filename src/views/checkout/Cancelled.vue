@@ -16,31 +16,31 @@
 </template>
 
 <script>
-var aboutImg = require('@/assets/img/about03.jpg');
-var cancelledIcon = require('@/assets/img/error.svg');
-import TopHeroBanner from '@/components/TopHeroBanner.vue';
+var aboutImg = require("@/assets/img/about03.jpg");
+var cancelledIcon = require("@/assets/img/error.svg");
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
 
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-    components: {
-        heroBanner: TopHeroBanner
-    },
-    name: 'Cancelled',
-    data() {
-        return {
-            title: 'Payment Cancelled',
-            contentLoaded: false,
-            isError: false,
-            cancelledIcon
-        };
-    },
-    computed: {
-        //User is logged in
-        userIsLoggedIn() {
-            return this.$store.getters.isLoggedIn;
-        }
-    },
-    methods: {}
+  components: {
+    heroBanner: TopHeroBanner
+  },
+  name: "Cancelled",
+  data() {
+    return {
+      title: "Payment Cancelled",
+      contentLoaded: false,
+      isError: false,
+      cancelledIcon
+    };
+  },
+  computed: {
+    //User is logged in
+    userIsLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    }
+  },
+  methods: {}
 };
 </script>

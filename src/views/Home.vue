@@ -244,150 +244,155 @@
 </template>
 
 <script>
-    var aboutImg1 = require('../assets/img/about1.jpg');
-    var aboutImg2 = require('../assets/img/about2.jpg');
+var aboutImg1 = require("../assets/img/about1.jpg");
+var aboutImg2 = require("../assets/img/about2.jpg");
 
-    var specialImg1 = require('../assets/img/special1.svg');
-    var specialImg2 = require('../assets/img/special2.svg');
-    var specialImg3 = require('../assets/img/special3.svg');
-    var specialImg4 = require('../assets/img/special4.svg');
+var specialImg1 = require("../assets/img/special1.svg");
+var specialImg2 = require("../assets/img/special2.svg");
+var specialImg3 = require("../assets/img/special3.svg");
+var specialImg4 = require("../assets/img/special4.svg");
 
-    var specialImageMiddle = require('../assets/img/special-middle.png');
+var specialImageMiddle = require("../assets/img/special-middle.png");
 
-    var mitras = require('../assets/img/brands/mitras.png');
+var mitras = require("../assets/img/brands/mitras.png");
 
-    import axios from 'axios';
-    import Callback from '../components/Callback';
+import axios from "axios";
+import Callback from "../components/Callback";
 
-    export default {
-        name: 'home',
-        components: {
-           appCallback: Callback 
-        },
-        data() {
-            return {
-                homeSliders: [],
-                newArrivals: [],
-                blogPosts: [],
-                brands: {mitras: mitras},
-                aboutImages: { about1: aboutImg1, about2: aboutImg2 },
-                specialImages: { special1: specialImg1, special2: specialImg2, special3: specialImg3, special4: specialImg4, specialMiddle: specialImageMiddle}
-            }
-        },
-        metaInfo: {
-            title: 'Home'
-        },
-        methods: {
-            //Fetch Sliders
-            fetchSliderImages() {
-                var self = this;
+export default {
+  name: "home",
+  components: {
+    appCallback: Callback
+  },
+  data() {
+    return {
+      homeSliders: [],
+      newArrivals: [],
+      blogPosts: [],
+      brands: { mitras: mitras },
+      aboutImages: { about1: aboutImg1, about2: aboutImg2 },
+      specialImages: {
+        special1: specialImg1,
+        special2: specialImg2,
+        special3: specialImg3,
+        special4: specialImg4,
+        specialMiddle: specialImageMiddle
+      }
+    };
+  },
+  metaInfo: {
+    title: "Home"
+  },
+  methods: {
+    //Fetch Sliders
+    fetchSliderImages() {
+      var self = this;
 
-                axios.get(APIURL + 'sliderindex').then(response => {
-                    var res = response.data;
-                    this.homeSliders = res.data;
+      axios
+        .get(APIURL + "sliderindex")
+        .then(response => {
+          var res = response.data;
+          this.homeSliders = res.data;
 
-                    //Home slider (init)
-                    this.$nextTick(function() {
-                        $('#home-slider').owlCarousel({
-                            loop:true,
-                            margin:0,
-                            items: 1,
-                            autoplay: true,
-                            nav: true,
-                            responsiveClass: true,
-                            responsive: {
-                                0: {
-                                    items: 1,
-                                    nav: false,
-                                    dots: true
-                                },
-                                600: {
-                                    items: 1,
-                                    nav: false,
-                                    dots: true
-                                },
-                                1120: {
-                                    items: 1,
-                                    dots: false,
-                                    nav: true
-                                }
-                            },
+          //Home slider (init)
+          this.$nextTick(function() {
+            $("#home-slider").owlCarousel({
+              loop: true,
+              margin: 0,
+              items: 1,
+              autoplay: true,
+              nav: true,
+              responsiveClass: true,
+              responsive: {
+                0: {
+                  items: 1,
+                  nav: false,
+                  dots: true
+                },
+                600: {
+                  items: 1,
+                  nav: false,
+                  dots: true
+                },
+                1120: {
+                  items: 1,
+                  dots: false,
+                  nav: true
+                }
+              }
+            });
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
 
-                        });
-                    });
-                    
-                }).catch(err => {
-                    console.log(err);
-                })
-                
-                
+    //New arrivals
+    fetchNewArrivals() {
+      var self = this;
 
-                
+      axios
+        .get(APIURL + "newarrivals")
+        .then(response => {
+          this.newArrivals = response.data.data;
+
+          //New arrivals
+          this.$nextTick(() => {
+            var newArrivalOptions = {
+              loop: true,
+              autoplay: true,
+              margin: 10,
+              nav: true,
+              responsive: {
+                0: { items: 1, nav: false, dots: true },
+                350: { items: 2, nav: false, dots: true },
+                600: { items: 3, nav: false, dots: true },
+                1000: { items: 4, nav: false, dots: true }
+              }
+            };
+
+            $("#newProducts").owlCarousel(newArrivalOptions);
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
+    async fetchBlogPosts() {
+      let posts = await axios.get(APIURL + "blog");
+      this.blogPosts = posts.data.posts;
+
+      this.$nextTick(() => {
+        //Press carousel
+        $(".blog-carousel").owlCarousel({
+          margin: 20,
+          responsive: {
+            0: {
+              items: 1,
+              nav: true,
+              dots: false
             },
-
-            //New arrivals 
-            fetchNewArrivals() {
-                var self = this;
-
-                axios.get(APIURL + 'newarrivals').then(response => {
-                    this.newArrivals = response.data.data;
-
-                    //New arrivals
-                    this.$nextTick(() => {
-                        var newArrivalOptions = {
-                            loop: true,
-                            autoplay: true,
-                            margin: 10,
-                            nav: true,
-                            responsive:{ 
-                                0:{ items:1, nav:false, dots:true }, 
-                                350: {items: 2, nav:false, dots:true},  
-                                600:{ items:3, nav:false, dots:true }, 
-                                1000:{items:4, nav:false, dots:true }
-                            }
-                        };
-    
-                        $('#newProducts').owlCarousel(newArrivalOptions);
-                    })
-                }).catch(err => {
-                    console.log(err);
-                });
+            600: {
+              items: 2,
+              nav: true,
+              dots: false
             },
-
-            async fetchBlogPosts() {
-                let posts = await axios.get(APIURL + 'blog');
-                this.blogPosts = posts.data.posts;
-
-                this.$nextTick(() => {
-                    //Press carousel
-                    $('.blog-carousel').owlCarousel({
-                        margin: 20,
-                        responsive:{
-                            0:{
-                                items:1,
-                                nav:true,
-                                dots: false
-                            },
-                            600:{
-                                items:2,
-                                nav:true,
-                                dots: false
-                            },
-                            1000:{
-                                items:3,
-                                nav:true,
-                                dots: false
-                            }
-                        }
-                    });
-                })
+            1000: {
+              items: 3,
+              nav: true,
+              dots: false
             }
-        },
-        created() {
-            this.fetchSliderImages();
-            this.fetchNewArrivals();
-            this.fetchBlogPosts();
-        }
+          }
+        });
+      });
     }
+  },
+  created() {
+    this.fetchSliderImages();
+    this.fetchNewArrivals();
+    this.fetchBlogPosts();
+  }
+};
 </script>
-

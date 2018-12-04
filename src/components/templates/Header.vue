@@ -77,30 +77,30 @@
 </template>
 
 <script>
-var _ = require('lodash');
-var logo = require('../../assets/img/sheaLogo.png');
+var _ = require("lodash");
+var logo = require("../../assets/img/sheaLogo.png");
 
 export default {
-    name: 'Header',
-    data() {
-        return {
-            logo: logo
-        };
+  name: "Header",
+  data() {
+    return {
+      logo: logo
+    };
+  },
+  computed: {
+    totalCartQuantity() {
+      return this.$store.getters.totalCartQuantity;
     },
-    computed: {
-        totalCartQuantity() {
-            return this.$store.getters.totalCartQuantity;
-        },
 
-        userData() {
-            return this.$store.getters.isLoggedIn;
-        }
-    },
-    methods: {
-        logoutUser() {
-            this.$store.dispatch('LOGOUT_USER');
-        }
+    userData() {
+      return this.$store.getters.isLoggedIn;
     }
+  },
+  methods: {
+    logoutUser() {
+      this.$store.dispatch("LOGOUT_USER");
+    }
+  }
 };
 </script>
 

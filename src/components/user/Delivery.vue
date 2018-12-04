@@ -16,7 +16,7 @@
                             <div class="form-group">
                                 <label for="">First Name</label>
                                 <input type="text" name="dfirstname" id="dfirstname" class="form-control"
-                                    v-model.trim="delivery.fname"
+                                    v-model.trim="delivery.firstname"
                                     v-validate="'required'"
                                     data-vv-as="delivery first name"
                                 >
@@ -28,7 +28,7 @@
                             <div class="form-group">
                                 <label for="">Last Name</label>
                                 <input type="text" name="dlastname" id="dlastname" class="form-control"
-                                    v-model.trim="delivery.lname"
+                                    v-model.trim="delivery.lastname"
                                     v-validate="'required'"
                                     data-vv-as="delivery last name"
                                 >
@@ -75,11 +75,24 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="">City</label>
-                                <input type="text" name="dcity" id="dcity" class="form-control"
+                                <select name="dcity" id="dcity" class="form-control"
                                     v-model.trim="delivery.city"
                                     v-validate="'required'"
                                     data-vv-as="delivery city"
                                 >
+                                    <option value="">Select city</option>
+                                    <option
+                                        v-for="(city, i) in cities" :key="i"
+                                        :value="city.value"
+                                    >
+                                        {{ city.name }}
+                                    </option>
+                                </select>
+                                <!-- <input type="text" name="dcity" id="dcity" class="form-control"
+                                    v-model.trim="delivery.city"
+                                    v-validate="'required'"
+                                    data-vv-as="delivery city"
+                                > -->
                                 <span class="text-danger">{{ errors.first('dcity') }}</span>
                             </div>
                         </div>
@@ -105,21 +118,14 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
-    name: 'Delivery',
-    data() {
-        return {
-            delivery: {
-                fname: this.$store.state.userDeliveryInfo.firstname,
-                lname: this.$store.state.userDeliveryInfo.lastname,
-                address: this.$store.state.userDeliveryInfo.address,
-                address2: this.$store.state.userDeliveryInfo.address2,
-                city: this.$store.state.userDeliveryInfo.city,
-                country: this.$store.state.userDeliveryInfo.country,
-                phone: this.$store.state.userDeliveryInfo.phone
-            }
-        };
+    name: "Delivery",
+    props: ["delivery"],
+    computed: {
+        cities() {
+            return this.$store.getters.citiesGetter;
+        }
     },
     methods: {
         saveDeliveryInfo(e) {
@@ -127,38 +133,38 @@ export default {
 
             this.$validator.validateAll().then(result => {
                 if (result) {
-                    btn.classList.add('is-loading', 'is-loading-sm');
-                    btn.setAttribute('disabled', '');
+                    btn.classList.add("is-loading", "is-loading-sm");
+                    btn.setAttribute("disabled", "");
 
                     let params = new URLSearchParams();
-                    params.append('dfname', this.delivery.fname);
-                    params.append('dlname', this.delivery.lname);
-                    params.append('daddress', this.delivery.address);
-                    params.append('daddress2', this.delivery.address2);
-                    params.append('dcity', this.delivery.city);
-                    params.append('dcountry', this.delivery.country);
-                    params.append('dphone', this.delivery.phone);
-                    params.append('user', this.$store.state.userData.mask);
+                    params.append("dfname", this.delivery.firstname);
+                    params.append("dlname", this.delivery.lastname);
+                    params.append("daddress", this.delivery.address);
+                    params.append("daddress2", this.delivery.address2);
+                    params.append("dcity", this.delivery.city);
+                    params.append("dcountry", this.delivery.country);
+                    params.append("dphone", this.delivery.phone);
+                    params.append("user", this.$store.state.userData.mask);
 
                     axios
-                        .post(APIURL + 'users/update/delivery', params)
+                        .post(APIURL + "users/update/delivery", params)
                         .then(response => {
-                            btn.classList.remove('is-loading', 'is-loading-sm');
-                            btn.removeAttribute('disabled');
+                            btn.classList.remove("is-loading", "is-loading-sm");
+                            btn.removeAttribute("disabled");
                             let res = response.data;
                             if (res.status == 200) {
-                                this.$swal('Success', res.msg, 'success');
+                                this.$swal("Success", res.msg, "success");
                                 this.$store.commit(
-                                    'setUserDeliveryInfo',
+                                    "setUserDeliveryInfo",
                                     res.address
                                 );
                             } else {
                                 if (res.status == 400) {
                                     $.each(res.errors, (k, v) => {
-                                        $('#' + k).after(v);
+                                        $("#" + k).after(v);
                                     });
                                 } else {
-                                    this.$swal('Error', res.msg, 'error');
+                                    this.$swal("Error", res.msg, "error");
                                 }
                             }
                         })
@@ -171,4 +177,3 @@ export default {
     }
 };
 </script>
-

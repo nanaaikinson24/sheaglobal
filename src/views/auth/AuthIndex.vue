@@ -29,31 +29,31 @@
 </template>
 
 <script>
-    import AuthPasswordReset from './AuthPasswordReset.vue'
-    import AuthActivateLink from './AuthActivateLink.vue'
-    import TopHeroBanner from '@/components/TopHeroBanner.vue';
-    import AuthLogin from './AuthLogin.vue'
-    import AuthRegister from './AuthRegister.vue'
+import AuthPasswordReset from "./AuthPasswordReset.vue";
+import AuthActivateLink from "./AuthActivateLink.vue";
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
+import AuthLogin from "./AuthLogin.vue";
+import AuthRegister from "./AuthRegister.vue";
 
-    export default {
-        name: 'AuthIndex',
-        components: {
-            login: AuthLogin,
-            register: AuthRegister,
-            heroBanner: TopHeroBanner,
-            passwordReset: AuthPasswordReset,
-            activateLink: AuthActivateLink
-        },
-        data() {
-            return {
-                title: 'Account',
-                authState: 'login'
-            }
-        },
-        methods: {
-            changeAuthState(value) {
-                this.authState = value;
-            }
-        }
+export default {
+  name: "AuthIndex",
+  components: {
+    login: AuthLogin,
+    register: AuthRegister,
+    heroBanner: TopHeroBanner,
+    passwordReset: AuthPasswordReset,
+    activateLink: AuthActivateLink
+  },
+  data() {
+    return {
+      title: "Account",
+      authState: "login"
+    };
+  },
+  methods: {
+    changeAuthState(value) {
+      this.authState = value;
     }
+  }
+};
 </script>

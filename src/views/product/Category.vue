@@ -118,95 +118,98 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import Callback from '../../components/Callback.vue';
-    import ErrorComponent from '../../components/Error404.vue';
-    import ProductCategoryFakeLoader from '../../components/ProductCategoryFakeLoader.vue';
-    import ProductsSidebar from '../../components/ProductsSidebar.vue';
-    import TopHeroBanner from '../../components/TopHeroBanner.vue';
+import axios from "axios";
+import Callback from "../../components/Callback.vue";
+import ErrorComponent from "../../components/Error404.vue";
+import ProductCategoryFakeLoader from "../../components/ProductCategoryFakeLoader.vue";
+import ProductsSidebar from "../../components/ProductsSidebar.vue";
+import TopHeroBanner from "../../components/TopHeroBanner.vue";
 
+export default {
+  components: {
+    error404: ErrorComponent,
+    appCallback: Callback,
+    fakeContent: ProductCategoryFakeLoader,
+    productsSidebar: ProductsSidebar,
+    heroBanner: TopHeroBanner
+  },
+  name: "Category",
+  data() {
+    return {
+      showMainContent: true,
+      categoryData: [],
+      subcategoryData: [],
+      productsData: [],
+      hasSubcategory: "",
+      contentLoaded: false,
+      fakeItems: 3,
+      categoriesData: [],
+      bannerTitle: "Products"
+    };
+  },
+  metaInfo() {
+    return {
+      title: this.categoryData.name
+    };
+  },
+  methods: {
+    //Fetch category detail
+    fetchCategoryDetail() {
+      var dash = this.$route.params.catdash;
+      var mask = this.$route.params.catmask;
 
-    export default {
-        components: {
-            error404: ErrorComponent, 
-            appCallback: Callback,
-            fakeContent: ProductCategoryFakeLoader,
-            productsSidebar: ProductsSidebar,
-            heroBanner: TopHeroBanner
-        },
-        name: 'Category',
-        data() {
-            return {
-                showMainContent: true,
-                categoryData: [],
-                subcategoryData: [],
-                productsData: [],
-                hasSubcategory: '',
-                contentLoaded: false,
-                fakeItems: 3,
-                categoriesData: [],
-                bannerTitle: 'Products'
+      axios
+        .get(APIURL + "category/" + dash + "/" + mask)
+        .then(response => {
+          if (response.data.status == 200) {
+            var res = response.data;
+
+            this.contentLoaded = true;
+            this.categoryData = res.data.category;
+            this.hasSubcategory = res.data.subcategories;
+
+            if (this.hasSubcategory) {
+              this.subcategoryData = res.data.data;
+            } else {
+              this.productsData = res.data.data;
             }
-        },
-         metaInfo() {
-            return {
-                title: this.categoryData.name
-            }  
-        },
-        methods: {
-            //Fetch category detail
-            fetchCategoryDetail() {
-                var dash = this.$route.params.catdash;
-                var mask = this.$route.params.catmask;
 
-                axios.get(APIURL + 'category/' + dash + '/' + mask).then(response => {
-                    if (response.data.status == 200) {
-                        var res = response.data;
+            this.$nextTick(() => {
+              var categoryProductOptions = {
+                loop: false,
+                autoplay: true,
+                margin: 10,
+                nav: true,
+                responsive: {
+                  0: { items: 1, nav: false, dots: true },
+                  350: { items: 2, nav: false, dots: true },
+                  600: { items: 3, nav: false, dots: true },
+                  1000: { items: 3, nav: false, dots: true }
+                }
+              };
 
-                        this.contentLoaded = true;
-                        this.categoryData = res.data.category;
-                        this.hasSubcategory = res.data.subcategories;
+              $(".category-product-carousel").owlCarousel(
+                categoryProductOptions
+              );
+            });
+          } else {
+            this.showMainContent = false;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
 
-                        if (this.hasSubcategory) {
-                            this.subcategoryData = res.data.data;
-                        }
-                        else {
-                            this.productsData = res.data.data;
-                        }
+    //To text
+    contentToText(content) {
+      return $("<div/>")
+        .html(content)
+        .text();
+    }
 
-                        this.$nextTick(() => {
-                            var categoryProductOptions = {
-                                loop: false,
-                                autoplay: true,
-                                margin: 10,
-                                nav: true,
-                                responsive:{ 
-                                    0:{ items:1, nav:false, dots:true }, 
-                                    350: {items: 2, nav:false, dots:true},  
-                                    600:{ items:3, nav:false, dots:true }, 
-                                    1000:{items:3, nav:false, dots:true }
-                                }
-                            };
-
-                            $('.category-product-carousel').owlCarousel(categoryProductOptions);
-                        });
-                    }
-                    else {
-                        this.showMainContent = false;
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-            },
-
-            //To text
-            contentToText(content) {
-                return $('<div/>').html(content).text();
-            },
-
-            //Fetch categories
-            /*fetchCategories() {
+    //Fetch categories
+    /*fetchCategories() {
                 var response = await axios.get(APIURL + 'categories').then(response => {
                     this.categoriesData = await response.data;
                 })
@@ -215,21 +218,24 @@
                 });
                     
             }*/
-        },
-        created() {
-            this.fetchCategoryDetail();
-            //this.fetchCategories();
-        },
-        mounted() {
-            var self = this;
-            setTimeout(() => {
-                var queryString = self.$route.query.sub;
-                if (queryString) {
-                    $('html, body').animate({
-                        scrollTop: $("#" + queryString).offset().top
-                    }, 1000);
-                }
-            }, 1000);
-        }
-    }
+  },
+  created() {
+    this.fetchCategoryDetail();
+    //this.fetchCategories();
+  },
+  mounted() {
+    var self = this;
+    setTimeout(() => {
+      var queryString = self.$route.query.sub;
+      if (queryString) {
+        $("html, body").animate(
+          {
+            scrollTop: $("#" + queryString).offset().top
+          },
+          1000
+        );
+      }
+    }, 1000);
+  }
+};
 </script>

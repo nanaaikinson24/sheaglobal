@@ -319,311 +319,301 @@
 </template>
 
 <script>
-var aboutImg = require('@/assets/img/about03.jpg');
-import TopHeroBanner from '@/components/TopHeroBanner.vue';
-import Shipping from '@/components/checkout/Shipping.vue';
-import Login from '@/components/checkout/Login.vue';
+var aboutImg = require("@/assets/img/about03.jpg");
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
+import Shipping from "@/components/checkout/Shipping.vue";
+import Login from "@/components/checkout/Login.vue";
 
-import axios from 'axios';
+import axios from "axios";
 
 //local registration form-wizard
-import { FormWizard, TabContent } from 'vue-form-wizard';
-import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+import { FormWizard, TabContent } from "vue-form-wizard";
+import "vue-form-wizard/dist/vue-form-wizard.min.css";
 
 export default {
-    components: {
-        heroBanner: TopHeroBanner,
-        Shipping,
-        FormWizard,
-        TabContent,
-        Login
+  components: {
+    heroBanner: TopHeroBanner,
+    Shipping,
+    FormWizard,
+    TabContent,
+    Login
+  },
+  name: "Index",
+  data() {
+    return {
+      title: "Checkout",
+      loginData: { email: "", password: "" },
+      berrors: [],
+      countries: [],
+      billingErrors: {
+        fname: { status: false, msg: "" },
+        lname: { status: false, msg: "" },
+        address: { status: false, msg: "" },
+        city: { status: false, msg: "" },
+        country: { status: false, msg: "" },
+        email: { status: false, invalid: "", msg: "" }
+      },
+      shippingData: {
+        fname: this.$store.state.userDeliveryInfo.firstname,
+        lname: this.$store.state.userDeliveryInfo.lastname,
+        address: this.$store.state.userDeliveryInfo.address,
+        address2: this.$store.state.userDeliveryInfo.address2,
+        city: this.$store.state.userDeliveryInfo.city,
+        country: this.$store.state.userDeliveryInfo.country,
+        phone: this.$store.state.userDeliveryInfo.phone
+      },
+      billing: {
+        fname: this.$store.state.userBillingInfo.firstname,
+        lname: this.$store.state.userBillingInfo.lastname,
+        address: this.$store.state.userBillingInfo.address,
+        address2: this.$store.state.userBillingInfo.address2,
+        city: this.$store.state.userBillingInfo.city,
+        country: this.$store.state.userBillingInfo.country,
+        email: this.$store.state.userBillingInfo.email
+      }
+    };
+  },
+  computed: {
+    //User is logged in
+    userIsLoggedIn() {
+      return this.$store.getters.isLoggedIn;
     },
-    name: 'Index',
-    data() {
-        return {
-            title: 'Checkout',
-            loginData: { email: '', password: '' },
-            berrors: [],
-            countries: [],
-            billingErrors: {
-                fname: { status: false, msg: '' },
-                lname: { status: false, msg: '' },
-                address: { status: false, msg: '' },
-                city: { status: false, msg: '' },
-                country: { status: false, msg: '' },
-                email: { status: false, invalid: '', msg: '' }
-            },
-            shippingData: {
-                fname: this.$store.state.userDeliveryInfo.firstname,
-                lname: this.$store.state.userDeliveryInfo.lastname,
-                address: this.$store.state.userDeliveryInfo.address,
-                address2: this.$store.state.userDeliveryInfo.address2,
-                city: this.$store.state.userDeliveryInfo.city,
-                country: this.$store.state.userDeliveryInfo.country,
-                phone: this.$store.state.userDeliveryInfo.phone
-            },
-            billing: {
-                fname: this.$store.state.userBillingInfo.firstname,
-                lname: this.$store.state.userBillingInfo.lastname,
-                address: this.$store.state.userBillingInfo.address,
-                address2: this.$store.state.userBillingInfo.address2,
-                city: this.$store.state.userBillingInfo.city,
-                country: this.$store.state.userBillingInfo.country,
-                email: this.$store.state.userBillingInfo.email
-            }
-        };
+
+    //Tab index
+    startIndex() {
+      if (this.$store.getters.isLoggedIn) {
+        return 1;
+      } else {
+        return 0;
+      }
     },
-    computed: {
-        //User is logged in
-        userIsLoggedIn() {
-            return this.$store.getters.isLoggedIn;
-        },
 
-        //Tab index
-        startIndex() {
-            if (this.$store.getters.isLoggedIn) {
-                return 1;
-            } else {
-                return 0;
-            }
-        },
-
-        //Cart items
-        orderCartItems() {
-            return this.$store.getters.cartGetter;
-        },
-
-        //Subtotal
-        subtotal() {
-            return this.orderCartItems.reduce(function(acc, cur) {
-                let total = acc + cur.price * cur.quantity;
-                return total;
-            }, 0);
-        },
-
-        tax() {
-            return this.$store.getters.taxGetter;
-        },
-
-        shipping() {
-            return this.$store.getters.shippingGetter;
-        },
-
-        //calculate total
-        total() {
-            return this.subtotal + this.tax + this.shipping;
-        }
+    //Cart items
+    orderCartItems() {
+      return this.$store.getters.cartGetter;
     },
-    watch: {
-        'loginData.email'(newVal, oldVal) {
-            $('.s-v-em').remove();
-        },
-        'loginData.password'(newVal, oldVal) {
-            $('.s-v-ep').remove();
-        }
+
+    //Subtotal
+    subtotal() {
+      return this.orderCartItems.reduce(function(acc, cur) {
+        let total = acc + cur.price * cur.quantity;
+        return total;
+      }, 0);
     },
-    methods: {
-        validatePaymentTab: function() {
-            if (!this.billing.fname) {
-                this.billingErrors.fname.status = true;
-                this.billingErrors.fname.msg =
-                    'The first name field is required';
-                this.berrors.push(1);
-            }
 
-            if (!this.billing.lname) {
-                this.billingErrors.lname.status = true;
-                this.billingErrors.lname.msg =
-                    'The first name field is required';
-                this.berrors.push(1);
-            }
-            if (!this.billing.city) {
-                this.billingErrors.city.status = true;
-                this.billingErrors.city.msg =
-                    'The first name field is required';
-                this.berrors.push(1);
-            }
-            if (!this.billing.country) {
-                this.billingErrors.country.status = true;
-                this.billingErrors.country.msg =
-                    'The first name field is required';
-                this.berrors.push(1);
-            }
-            if (!this.billing.address) {
-                this.billingErrors.address.status = true;
-                this.billingErrors.address.msg =
-                    'The first name field is required';
-                this.berrors.push(1);
-            }
-            if (!this.billing.email) {
-                this.billingErrors.email.status = true;
-                this.billingErrors.email.msg =
-                    'The first name field is required';
-                this.berrors.push(1);
-            }
-            var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (!filter.test(this.billing.email)) {
-                this.billingErrors.email.status = true;
-                this.billingErrors.email.invalid =
-                    'Please enter a valid email address';
-                this.berrors.push(1);
-            }
-
-            console.log(this.berrors);
-
-            if (this.berrors.length > 0) {
-                return false;
-            }
-            this.berrors = [];
-
-            this.billingErrors.fname.status = false;
-            this.billingErrors.lname.status = false;
-            this.billingErrors.city.status = false;
-            this.billingErrors.address.status = false;
-            this.billingErrors.email.status = false;
-            this.billingErrors.country.status = false;
-
-            return true;
-        },
-
-        //validate login
-        validateLoginTab() {
-            $('.s-v-e').remove();
-            $('.s-v-ep').remove();
-            $('.s-v-em').remove();
-
-            if (this.$store.getters.isLoggedIn) {
-                return true;
-            }
-
-            let regExEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-            if (this.loginData.email && this.loginData.password) {
-                if (regExEmail.test(this.loginData.email)) {
-                    let params = new URLSearchParams();
-                    let _res;
-                    params.append('email', this.loginData.email);
-                    params.append('password', this.loginData.password);
-
-                    $('.wizard-footer-right button.wizard-btn').attr(
-                        'disabled',
-                        ''
-                    );
-
-                    axios
-                        .post(APIURL + 'account/signin', params)
-                        .then(response => {
-                            $(
-                                '.wizard-footer-right button.wizard-btn'
-                            ).removeAttr('disabled');
-                            let res = response.data;
-
-                            if (res.status == 200) {
-                                let userData = {
-                                    firstname: res.data.firstname,
-                                    lastname: res.data.lastname,
-                                    email: res.data.email,
-                                    access_token: res.data.access_token,
-                                    mask: res.data.mask
-                                };
-                                this.$store.dispatch('SET_USER_DATA', userData);
-                                window.localStorage.setItem(
-                                    'userData',
-                                    JSON.stringify(userData)
-                                );
-
-                                _res = true;
-                            } else {
-                                if (res.status == 403) {
-                                    $.each(res.errors, function(k, v) {
-                                        $('#' + k).after(v);
-                                    });
-                                } else if (res.status == 204) {
-                                    $('.loginMsg').html(
-                                        '<p class="text-danger text-center" id="loginMsg">' +
-                                            res.msg +
-                                            '</p>'
-                                    );
-                                    setTimeout(() => {
-                                        $('#loginMsg').fadeOut(function() {
-                                            $(this).remove();
-                                        });
-                                    }, 5000);
-                                } else {
-                                    let html = `<p class="text-info" id="loginMsg">${
-                                        res.msg
-                                    }. Click here to </p>`;
-                                    $('.loginMsg').html(html);
-                                    setTimeout(() => {
-                                        $('#loginMsg').fadeOut(function() {
-                                            $(this).remove();
-                                        });
-                                    }, 5000);
-                                }
-                                _res = false;
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err);
-                            return false;
-                        });
-                    return _res;
-                } else {
-                    $('#email').after(
-                        '<span class="text-danger s-v-em">Please enter a valid email address</span>'
-                    );
-                    return false;
-                }
-            } else {
-                $('#email').after(
-                    '<span class="text-danger s-v-em">The email field is required</span>'
-                );
-                $('#password').after(
-                    '<span class="text-danger s-v-ep">The password field is required</span>'
-                );
-
-                return false;
-            }
-        },
-
-        //Validate tab
-        onComplete() {
-            let cart = this.$store.state.cart;
-            let user = this.$store.state.userData.mask;
-            let params = new URLSearchParams();
-            params.append('cart', JSON.stringify(cart));
-            params.append('shipping', JSON.stringify(this.shippingData));
-            params.append('billing', JSON.stringify(this.billing));
-            params.append('user', user);
-
-            axios
-                .post(APIURL + 'pay', params)
-                .then(response => {})
-                .catch(err => {
-                    console.log(err);
-                });
-            return true;
-        },
-
-        //Validate shipping
-        validateShippingTab() {
-            return this.$validator.validateAll();
-        },
-
-        fetchCountries() {
-            axios
-                .get('https://restcountries.eu/rest/v2/all')
-                .then(response => {
-                    this.countries = response.data;
-                    //console.log(this.countries);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
+    tax() {
+      return this.$store.getters.taxGetter;
     },
-    created() {
-        this.fetchCountries();
+
+    shipping() {
+      return this.$store.getters.shippingGetter;
+    },
+
+    //calculate total
+    total() {
+      return this.subtotal + this.tax + this.shipping;
     }
+  },
+  watch: {
+    "loginData.email"(newVal, oldVal) {
+      $(".s-v-em").remove();
+    },
+    "loginData.password"(newVal, oldVal) {
+      $(".s-v-ep").remove();
+    }
+  },
+  methods: {
+    validatePaymentTab: function() {
+      if (!this.billing.fname) {
+        this.billingErrors.fname.status = true;
+        this.billingErrors.fname.msg = "The first name field is required";
+        this.berrors.push(1);
+      }
+
+      if (!this.billing.lname) {
+        this.billingErrors.lname.status = true;
+        this.billingErrors.lname.msg = "The first name field is required";
+        this.berrors.push(1);
+      }
+      if (!this.billing.city) {
+        this.billingErrors.city.status = true;
+        this.billingErrors.city.msg = "The first name field is required";
+        this.berrors.push(1);
+      }
+      if (!this.billing.country) {
+        this.billingErrors.country.status = true;
+        this.billingErrors.country.msg = "The first name field is required";
+        this.berrors.push(1);
+      }
+      if (!this.billing.address) {
+        this.billingErrors.address.status = true;
+        this.billingErrors.address.msg = "The first name field is required";
+        this.berrors.push(1);
+      }
+      if (!this.billing.email) {
+        this.billingErrors.email.status = true;
+        this.billingErrors.email.msg = "The first name field is required";
+        this.berrors.push(1);
+      }
+      var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!filter.test(this.billing.email)) {
+        this.billingErrors.email.status = true;
+        this.billingErrors.email.invalid = "Please enter a valid email address";
+        this.berrors.push(1);
+      }
+
+      console.log(this.berrors);
+
+      if (this.berrors.length > 0) {
+        return false;
+      }
+      this.berrors = [];
+
+      this.billingErrors.fname.status = false;
+      this.billingErrors.lname.status = false;
+      this.billingErrors.city.status = false;
+      this.billingErrors.address.status = false;
+      this.billingErrors.email.status = false;
+      this.billingErrors.country.status = false;
+
+      return true;
+    },
+
+    //validate login
+    validateLoginTab() {
+      $(".s-v-e").remove();
+      $(".s-v-ep").remove();
+      $(".s-v-em").remove();
+
+      if (this.$store.getters.isLoggedIn) {
+        return true;
+      }
+
+      let regExEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+      if (this.loginData.email && this.loginData.password) {
+        if (regExEmail.test(this.loginData.email)) {
+          let params = new URLSearchParams();
+          let _res;
+          params.append("email", this.loginData.email);
+          params.append("password", this.loginData.password);
+
+          $(".wizard-footer-right button.wizard-btn").attr("disabled", "");
+
+          axios
+            .post(APIURL + "account/signin", params)
+            .then(response => {
+              $(".wizard-footer-right button.wizard-btn").removeAttr(
+                "disabled"
+              );
+              let res = response.data;
+
+              if (res.status == 200) {
+                let userData = {
+                  firstname: res.data.firstname,
+                  lastname: res.data.lastname,
+                  email: res.data.email,
+                  access_token: res.data.access_token,
+                  mask: res.data.mask
+                };
+                this.$store.dispatch("SET_USER_DATA", userData);
+                window.localStorage.setItem(
+                  "userData",
+                  JSON.stringify(userData)
+                );
+
+                _res = true;
+              } else {
+                if (res.status == 403) {
+                  $.each(res.errors, function(k, v) {
+                    $("#" + k).after(v);
+                  });
+                } else if (res.status == 204) {
+                  $(".loginMsg").html(
+                    '<p class="text-danger text-center" id="loginMsg">' +
+                      res.msg +
+                      "</p>"
+                  );
+                  setTimeout(() => {
+                    $("#loginMsg").fadeOut(function() {
+                      $(this).remove();
+                    });
+                  }, 5000);
+                } else {
+                  let html = `<p class="text-info" id="loginMsg">${
+                    res.msg
+                  }. Click here to </p>`;
+                  $(".loginMsg").html(html);
+                  setTimeout(() => {
+                    $("#loginMsg").fadeOut(function() {
+                      $(this).remove();
+                    });
+                  }, 5000);
+                }
+                _res = false;
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              return false;
+            });
+          return _res;
+        } else {
+          $("#email").after(
+            '<span class="text-danger s-v-em">Please enter a valid email address</span>'
+          );
+          return false;
+        }
+      } else {
+        $("#email").after(
+          '<span class="text-danger s-v-em">The email field is required</span>'
+        );
+        $("#password").after(
+          '<span class="text-danger s-v-ep">The password field is required</span>'
+        );
+
+        return false;
+      }
+    },
+
+    //Validate tab
+    onComplete() {
+      let cart = this.$store.state.cart;
+      let user = this.$store.state.userData.mask;
+      let params = new URLSearchParams();
+      params.append("cart", JSON.stringify(cart));
+      params.append("shipping", JSON.stringify(this.shippingData));
+      params.append("billing", JSON.stringify(this.billing));
+      params.append("user", user);
+
+      axios
+        .post(APIURL + "pay", params)
+        .then(response => {})
+        .catch(err => {
+          console.log(err);
+        });
+      return true;
+    },
+
+    //Validate shipping
+    validateShippingTab() {
+      return this.$validator.validateAll();
+    },
+
+    fetchCountries() {
+      axios
+        .get("https://restcountries.eu/rest/v2/all")
+        .then(response => {
+          this.countries = response.data;
+          //console.log(this.countries);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+  created() {
+    this.fetchCountries();
+  }
 };
 </script>

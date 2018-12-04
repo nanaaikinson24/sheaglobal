@@ -9,14 +9,14 @@
 </template>
 
 <script>
-    var heroBanner = require('../assets/img/callback-form.jpg');
-    export default {
-        name: 'TopHeroBanner',
-        data() {
-            return {
-                heroBanner: heroBanner
-            }
-        },
-        props: ['title']
-    }
+var heroBanner = require("../assets/img/callback-form.jpg");
+export default {
+  name: "TopHeroBanner",
+  data() {
+    return {
+      heroBanner: heroBanner
+    };
+  },
+  props: ["title"]
+};
 </script>

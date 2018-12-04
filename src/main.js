@@ -16,7 +16,7 @@ var owlCarouselThumb = require("@/assets/js/owl.carousel2.thumbs.min.js");
 import "@/assets/scss/app.scss";
 
 //Globals
-global.APIURL = "https://sheaglobaltrading.com/sheaglobal/admin/api/";
+window.APIURL = "https://sheaglobaltrading.com/sheaglobal/admin/api/";
 
 //Vue use
 Vue.use(VeeValidate);
@@ -25,7 +25,7 @@ Vue.use(VueSweetalert2);
 Vue.config.productionTip = false;
 
 new Vue({
-    router,
-    store,
-    render: h => h(App)
+  router,
+  store,
+  render: h => h(App)
 }).$mount("#app");

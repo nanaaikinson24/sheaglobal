@@ -1,227 +1,240 @@
 <template>
-    <div>
-        <hero-banner :title="title"></hero-banner>
+	<div>
+		<hero-banner :title="title"></hero-banner>
 
-        <div class="container my-5">
-            <div class="row">
-                <div class="col-md-12 col-lg-10 offset-lg-1 checkout-accordion">
+		<div class="container my-5">
+			<div class="row">
+				<div class="col-md-12 col-lg-10 offset-lg-1 checkout-accordion">
 
-                    <form-wizard @on-complete="onComplete" 
-                        shape="tab"
-                        color="#43C13E"
-                        title=""
-                        subtitle=""
-                        nextButtonText="Continue"
-                        backButtonText="Previous"
-                        finishButtonText="Pay Now"
-                        stepSize="lg"
-                        :startIndex="startIndex"
-                        error-color="#ff0033"
-                    >
-                        <!-- login -->
-                        <tab-content title="Login" icon="ti-user"
-                            :beforeChange="validateLoginTab"
-                        >
-                        
-                                <div class="row" v-show="!userIsLoggedIn">
-                                    <div class="col-md-8 offset-md-2 my-4">
-                                        <div class="loginMsg"></div>
+					<form-wizard @on-complete="onComplete" 
+						shape="tab"
+						color="#43C13E"
+						title=""
+						subtitle=""
+						nextButtonText="Continue"
+						backButtonText="Previous"
+						finishButtonText="Proceed"
+						stepSize="lg"
+						:startIndex="startIndex"
+						error-color="#ff0033"
+					>
+						<!-- login -->
+						<tab-content title="Login" icon="ti-user"
+							:beforeChange="validateLoginTab"
+						>
+						
+								<div class="row" v-show="!userIsLoggedIn">
+									<div class="col-md-8 offset-md-2 my-4">
+										<div class="loginMsg"></div>
 
-                                        <form>
-                                            <div class="form-group">
-                                                <input type="email" name="email" id="email" class="form-control"
-                                                    placeholder="E-Mail*"
-                                                    v-model="loginData.email"
-                                                >
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="password" name="password" id="password" class="form-control"
-                                                    placeholder="Password*"
-                                                    v-model="loginData.password"
-                                                >
-                                            </div>
-                                            <div class="form-group">
-                                                <router-link to="/account">Not a member? Sign Up</router-link>
-                                            </div>
-                                        </form>
+										<form>
+											<div class="form-group">
+												<input type="email" name="email" id="email" class="form-control"
+													placeholder="E-Mail*"
+													v-model="loginData.email"
+												>
+											</div>
+											<div class="form-group">
+												<input type="password" name="password" id="password" class="form-control"
+													placeholder="Password*"
+													v-model="loginData.password"
+												>
+											</div>
+											<div class="form-group">
+												<router-link to="/account">Not a member? Sign Up</router-link>
+											</div>
+										</form>
 
-                                    </div>
-                                </div>
+									</div>
+								</div>
 
-                                <div class="" v-show="userIsLoggedIn">
-                                    <p class="text-center">
-                                        You are logged in
-                                    </p>
-                                </div>
+								<div class="" v-show="userIsLoggedIn">
+									<p class="text-center">
+										You are logged in
+									</p>
+								</div>
 
-                        </tab-content>
+						</tab-content>
 
-                        <!-- delivery -->
-                        <tab-content title="Delivery Info" icon="ti-truck"
-                            :beforeChange="validateShippingTab"
-                        >
-                            <div class="mb-5 row">
-                                <div class="col-md-12 col-lg-8 offset-lg-2">
-                                    <p>NB: Fields marked <span class="text-danger">*</span> are required</p>
-                                    <form class="checkout-form">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="">First Name <span class="text-danger">*</span></label>
-                                                    <input type="text" 
-                                                        name="firstname" id="firstname" 
-                                                        class="form-control"         
-                                                        placeholder="First Name *"
-                                                        v-model="shippingData.fname"
-                                                        v-validate="'required'" data-vv-as="full name"
-                                                    >
-                                                    <span class="text-danger">{{ errors.first('firstname') }}</span>
-                                                </div>
-                                            </div>
+						<!-- delivery -->
+						<tab-content title="Delivery Info" icon="ti-truck"
+							:beforeChange="validateShippingTab"
+						>
+							<div class="mb-5 row">
+								<div class="col-md-12 col-lg-8 offset-lg-2">
+									<p>NB: Fields marked <span class="text-danger">*</span> are required</p>
+									<form class="checkout-form">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="">First Name <span class="text-danger">*</span></label>
+													<input type="text" 
+														name="firstname" id="firstname" 
+														class="form-control"         
+														placeholder="First Name *"
+														v-model="shippingData.fname"
+														v-validate="'required'" data-vv-as="full name"
+													>
+													<span class="text-danger">{{ errors.first('firstname') }}</span>
+												</div>
+											</div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="">Last Name <span class="text-danger">*</span></label>
-                                                    <input type="text" 
-                                                        name="lastname" id="lastname" 
-                                                        class="form-control" 
-                                                        placeholder="Last Name *"
-                                                        v-model="shippingData.lname"
-                                                        v-validate="'required'" data-vv-as="full name"
-                                                    >
-                                                    <span class="text-danger">{{ errors.first('lastname') }}</span>
-                                                </div>
-                                            </div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="">Last Name <span class="text-danger">*</span></label>
+													<input type="text" 
+														name="lastname" id="lastname" 
+														class="form-control" 
+														placeholder="Last Name *"
+														v-model="shippingData.lname"
+														v-validate="'required'" data-vv-as="full name"
+													>
+													<span class="text-danger">{{ errors.first('lastname') }}</span>
+												</div>
+											</div>
 
 
 
-                                        </div>
+										</div>
 
-                                        <div class="form-group">
-                                            <label for="">Address <span class="text-danger">*</span></label>
-                                            <input type="text" name="address" id="address" class="form-control" placeholder="Address Line 1 *"
-                                                v-model="shippingData.address"
-                                                v-validate="'required'"  data-vv-as="address line 1"
-                                            >
-                                            <span class="text-danger">{{ errors.first('address') }}</span>
-                                        </div>
+										<div class="form-group">
+											<label for="">Address <span class="text-danger">*</span></label>
+											<input type="text" name="address" id="address" class="form-control" placeholder="Address Line 1 *"
+												v-model="shippingData.address"
+												v-validate="'required'"  data-vv-as="address line 1"
+											>
+											<span class="text-danger">{{ errors.first('address') }}</span>
+										</div>
 
-                                        <div class="form-group">
-                                            <label for="">Address Line 2</label>
-                                            <input type="text" name="address2" id="address2" class="form-control" placeholder="Address Line 2"
-                                                v-model="shippingData.address2"
-                                            >
-                                        </div>
+										<div class="form-group">
+											<label for="">Address Line 2</label>
+											<input type="text" name="address2" id="address2" class="form-control" placeholder="Address Line 2"
+												v-model="shippingData.address2"
+											>
+										</div>
 
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="">Country <span class="text-danger">*</span></label>
-                                                    <select name="country" id="country" class="form-control custom-select" 
-                                                        v-model="shippingData.country"
-                                                        v-validate="'required'"
-                                                        data-vv-as="country"
-                                                    >
-                                                        <option value="AE">United Arab Emirates</option>
-                                                    </select>
-                                                    <span class="text-danger">{{ errors.first('country') }}</span>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="">City <span class="text-danger">*</span></label>
-                                                    <input type="text" name="city" id="city" class="form-control"
-                                                        v-model.trim="shippingData.city"
-                                                        v-validate="'required'"
-                                                        data-vv-as="city"
-                                                    >
-                                                    <span class="text-danger">{{ errors.first('city') }}</span>
-                                                </div>
-                                            </div>
+										<div class="row">
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label for="">Country <span class="text-danger">*</span></label>
+													<select name="country" id="country" class="form-control custom-select" 
+														v-model="shippingData.country"
+														v-validate="'required'"
+														data-vv-as="country"
+													>
+														<option value="AE">United Arab Emirates</option>
+													</select>
+													<span class="text-danger">{{ errors.first('country') }}</span>
+												</div>
+											</div>
+											
+											<div class="col-lg-6">
+												<div class="form-group">
+													<label for="">City <span class="text-danger">*</span></label>
+													<select name="city" id="city" class="form-control"
+														v-model.trim="shippingData.city"
+														v-validate="'required'"
+														data-vv-as="city"
+													>
+														<option value="">Select city</option>
+														<option
+															v-for="(city, i) in cities" :key="i"
+															:value="city.value"
+														>
+															{{ city.name }}
+														</option>
+													</select>
+													<!-- <input type="text" name="city" id="city" class="form-control"
+														v-model.trim="shippingData.city"
+														v-validate="'required'"
+														data-vv-as="city"
+													> -->
+													<span class="text-danger">{{ errors.first('city') }}</span>
+												</div>
+											</div>
 
-                                            
-                                        </div>
+											
+										</div>
 
-                                        <div class="form-group">
-                                            <label for="">Phone <span class="text-danger">*</span></label>
-                                            <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone *"
-                                                v-model="shippingData.phone"
-                                                v-validate="'required|numeric'"  data-vv-as="phone"
-                                            >
-                                            <span class="text-danger">{{ errors.first('phone') }}</span>
-                                        </div>
-                                    </form>
+										<div class="form-group">
+											<label for="">Phone <span class="text-danger">*</span></label>
+											<input type="text" name="phone" id="phone" class="form-control" placeholder="Phone *"
+												v-model="shippingData.phone"
+												v-validate="'required|numeric'"  data-vv-as="phone"
+											>
+											<span class="text-danger">{{ errors.first('phone') }}</span>
+										</div>
+									</form>
 
-                                </div>
+								</div>
 
-                            </div>
+							</div>
 
-                        </tab-content>
+						</tab-content>
 
-                        <!-- order -->
-                        <tab-content title="Order Summary" icon="ti-list"
-                            
-                        >
-                            <div class="row mb-5">
-                                <div class="col-md-12 col-lg-8">
-                                    <table class="table table-borderless">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">QTY</th>
-                                                <th scope="col">ITEM</th>
-                                                <th scope="col">PRICE (AED)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(item, i) in orderCartItems" :key="i">
-                                                <th scope="row" class="is-header">{{ item.quantity }}</th>
-                                                <td>{{ item.name }}</td>
-                                                <td>{{ (item.quantity * item.price).toFixed(2) }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+						<!-- order -->
+						<tab-content title="Order Summary" icon="ti-list"
+							
+						>
+							<div class="row mb-5">
+								<div class="col-md-12 col-lg-8">
+									<table class="table table-borderless">
+										<thead>
+											<tr>
+												<th scope="col">QTY</th>
+												<th scope="col">ITEM</th>
+												<th scope="col">PRICE (AED)</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr v-for="(item, i) in orderCartItems" :key="i">
+												<th scope="row" class="is-header">{{ item.quantity }}</th>
+												<td>{{ item.name }}</td>
+												<td>{{ (item.quantity * item.price).toFixed(2) }}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 
-                                <div class="col-lg-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between mb-3">
-                                                <div></div>
-                                                <h6>AED</h6>
-                                            </div>
-                                            <div class="d-flex justify-content-between mb-3">
-                                                <div>Subtotal</div>
-                                                <div>{{ subtotal.toFixed(2) }}</div>
-                                            </div>
+								<div class="col-lg-4">
+									<div class="card">
+										<div class="card-body">
+											<div class="d-flex justify-content-between mb-3">
+												<div></div>
+												<h6>AED</h6>
+											</div>
+											<div class="d-flex justify-content-between mb-3">
+												<div>Subtotal</div>
+												<div>{{ subtotal.toFixed(2) }}</div>
+											</div>
 
-                                            <!-- <div class="d-flex justify-content-between mb-3">
-                                                <div>Shipping</div>
-                                                <div>{{ shipping.toFixed(2) }}</div>
-                                            </div>
+											<div class="d-flex justify-content-between mb-3">
+												<div>Shipping</div>
+												<div>{{ shipping.toFixed(2) }}</div>
+											</div>
 
-                                            <div class="d-flex justify-content-between">
-                                                <div>Vat</div>
-                                                <div>{{ tax.toFixed(2) }}</div>
-                                            </div> -->
+											<!-- <div class="d-flex justify-content-between">
+												<div>Vat</div>
+												<div>{{ tax.toFixed(2) }}</div>
+											</div> -->
 
-                                            <hr>
+											<hr>
 
-                                            <div class="d-flex justify-content-between">
-                                                <h6>Total</h6>
-                                                <h6>{{ total.toFixed(2) }}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </tab-content>
-                    </form-wizard>
+											<div class="d-flex justify-content-between">
+												<h6>Total</h6>
+												<h6>{{ total.toFixed(2) }}</h6>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</tab-content>
+					</form-wizard>
 
-                </div>
-            </div>
-        </div>
-    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -231,6 +244,7 @@ import Shipping from "@/components/checkout/Shipping.vue";
 import Login from "@/components/checkout/Login.vue";
 
 import axios from "axios";
+import _ from "lodash";
 
 //local registration form-wizard
 import { FormWizard, TabContent } from "vue-form-wizard";
@@ -250,17 +264,22 @@ export default {
             title: "Checkout",
             loginData: { email: "", password: "" },
             shippingData: {
-                fname: this.$store.state.userDeliveryInfo.firstname,
-                lname: this.$store.state.userDeliveryInfo.lastname,
-                address: this.$store.state.userDeliveryInfo.address,
-                address2: this.$store.state.userDeliveryInfo.address2,
-                city: this.$store.state.userDeliveryInfo.city,
-                country: this.$store.state.userDeliveryInfo.country,
-                phone: this.$store.state.userDeliveryInfo.phone
-            }
+                fname: "",
+                lname: "",
+                address: "",
+                address2: "",
+                city: "",
+                country: "",
+                phone: ""
+            },
+            paymentType: ""
         };
     },
     computed: {
+        cities() {
+            return this.$store.getters.citiesGetter;
+        },
+
         //User is logged in
         userIsLoggedIn() {
             return this.$store.getters.isLoggedIn;
@@ -299,7 +318,8 @@ export default {
         //calculate total
         total() {
             //return this.subtotal + this.tax + this.shipping;
-            return this.subtotal;
+            return this.subtotal + this.shipping;
+            //return this.subtotal;
         }
     },
     watch: {
@@ -413,6 +433,51 @@ export default {
 
         //Validate tab
         onComplete() {
+            this.$swal({
+                title: "",
+                text: "Select payment method",
+                type: "",
+                showCancelButton: true,
+
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Cash on delivery",
+                cancelButtonText: "Card",
+                allowOutsideClick: false
+            }).then(result => {
+                if (result.value) {
+                    this.proceedWithPayOnDelivery();
+                } else {
+                    this.proceedWithCard();
+                }
+            });
+        },
+
+        //Validate shipping
+        validateShippingTab() {
+            let city = this.shippingData.city;
+            let shipping;
+            if (city.toLowerCase() == "dubai") {
+                shipping = 10;
+            } else {
+                shipping = 25;
+            }
+            this.$store.dispatch("SET_SHIPPING_DATA", shipping);
+            return this.$validator.validateAll();
+        },
+
+        proceedWithCard() {
+            this.paymentType = "card";
+            this.processPayment();
+        },
+
+        proceedWithPayOnDelivery() {
+            this.paymentType = "cash";
+            this.processPayment();
+        },
+
+        // Process payment
+        processPayment() {
             $(".wizard-footer-right button.wizard-btn").attr("disabled", "");
             $(".wizard-footer-left button.wizard-btn").attr("disabled", "");
 
@@ -422,6 +487,7 @@ export default {
             params.append("cart", JSON.stringify(cart));
             params.append("shipping", JSON.stringify(this.shippingData));
             params.append("user", user);
+            params.append("paymentmethod", this.paymentType);
 
             $(".site-process-order").css({ display: "block" });
 
@@ -448,12 +514,23 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-            //return true;
         },
-
-        //Validate shipping
-        validateShippingTab() {
-            return this.$validator.validateAll();
+        getDeliveryInfo() {
+            let delivery = this.$store.getters.getDeliveryInfo;
+            if (!_.isEmpty(delivery)) {
+                this.shippingData = {
+                    fname: delivery.firstname,
+                    lname: delivery.lastname,
+                    address: delivery.address,
+                    address2: delivery.address2,
+                    city: delivery.city,
+                    country: delivery.country,
+                    phone: delivery.phone
+                };
+            }
+        },
+        created() {
+            this.getDeliveryInfo();
         }
     }
 };

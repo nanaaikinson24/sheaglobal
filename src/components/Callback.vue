@@ -89,97 +89,96 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    var callbackBgImg = require('../assets/img/callback-form.jpg');
-    export default {
-        name: "Callback",
-        data() {
-            return {
-                callbackBgImg: callbackBgImg,
-                callbackData: { name: '', email: '', message: '', distributor: ''}
-            }
-        },
-        methods: {
-            callbackSubmitFxn(e) {
-                var btn = e.currentTarget;
-                var sve = document.querySelector('.s-v-e');
-                if (sve) {
-                    sve.remove(); 
+import axios from "axios";
+var callbackBgImg = require("../assets/img/callback-form.jpg");
+export default {
+  name: "Callback",
+  data() {
+    return {
+      callbackBgImg: callbackBgImg,
+      callbackData: { name: "", email: "", message: "", distributor: "" }
+    };
+  },
+  methods: {
+    callbackSubmitFxn(e) {
+      var btn = e.currentTarget;
+      var sve = document.querySelector(".s-v-e");
+      if (sve) {
+        sve.remove();
+      }
+
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          let callBackData = {
+            name: this.callbackData.name,
+            email: this.callbackData.email,
+            message: this.callbackData.message,
+            distributor: this.callbackData.distributor
+          };
+
+          callBackData = JSON.stringify(callBackData);
+
+          axios.interceptors.request.use(function(config) {
+            btn.innerHTML = `<i class="fa fa-spinner fa-spin fa-fw"></i>`;
+            return config;
+          });
+
+          axios
+            .post(APIURL + "callback", callBackData)
+            .then(response => {
+              var res = response.data;
+              btn.innerHTML = "Submit";
+              if (res.status === true) {
+                var responseMsg = document.querySelector(".callbackFromMsg");
+                var html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                ${res.msg}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>`;
+                responseMsg.classList.add("my-3");
+                responseMsg.innerHTML = html;
+
+                this.callbackData.name = "";
+                this.callbackData.email = "";
+                this.callbackData.message = "";
+                this.callbackData.distributor = "";
+
+                this.$validator.reset();
+              } else {
+                if (res.status === "validation_errors") {
+                  res.errors.forEach((k, v) => {
+                    document.querySelector(`#${k}`).appendChild(v);
+                  });
+                } else {
+                  var responseMsg = document.querySelector(".callbackFromMsg");
+                  var html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                ${res.msg}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>`;
+                  responseMsg.classList.add("my-3");
+                  responseMsg.innerHTML = html;
+
+                  this.callbackData.name = "";
+                  this.callbackData.email = "";
+                  this.callbackData.message = "";
+                  this.callbackData.distributor = "";
+
+                  this.$validator.reset();
                 }
-
-                this.$validator.validateAll().then((result) => {
-                    if (result) {
-                        let callBackData = {
-                            'name' : this.callbackData.name,
-                            'email' : this.callbackData.email,
-                            'message' : this.callbackData.message,
-                            'distributor' : this.callbackData.distributor
-                        };
-
-                        callBackData = JSON.stringify(callBackData);
-
-                        axios.interceptors.request.use(function (config) {
-                            btn.innerHTML = `<i class="fa fa-spinner fa-spin fa-fw"></i>`;
-                            return config;
-                        });
-
-                        axios.post(APIURL + 'callback', callBackData).then(response => {
-                            var res = response.data;
-                            btn.innerHTML = 'Submit';
-                            if (res.status === true) {
-                                var responseMsg = document.querySelector('.callbackFromMsg');
-                                var html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                ${res.msg}
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>`;
-                                responseMsg.classList.add('my-3');
-                                responseMsg.innerHTML = html;
-
-                                this.callbackData.name = '';
-                                this.callbackData.email = '';
-                                this.callbackData.message = '';
-                                this.callbackData.distributor = '';
-
-                                this.$validator.reset()
-
-                            }
-                            else {
-                                if (res.status === 'validation_errors') {
-                                    res.errors.forEach((k, v) => {
-                                        document.querySelector(`#${k}`).appendChild(v);
-                                    }); 
-                                }
-                                else {
-                                    var responseMsg = document.querySelector('.callbackFromMsg');
-                                    var html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                ${res.msg}
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>`;
-                                    responseMsg.classList.add('my-3');
-                                    responseMsg.innerHTML = html;
-
-                                    this.callbackData.name = '';
-                                    this.callbackData.email = '';
-                                    this.callbackData.message = '';
-                                    this.callbackData.distributor = '';
-
-                                    this.$validator.reset()
-                                }
-                            }
-                        }).catch(err => {
-                            console.log(err);
-                        });
-                    }
-                })
-            }
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         }
+      });
     }
+  }
+};
 </script>
 
 <style scoped>
-
 </style>

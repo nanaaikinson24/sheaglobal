@@ -21,41 +21,39 @@
 </template>
 
 <script>
-    export default {
-        name: 'ProductCategoryFakeLoader',
-        data() {
-            return {
-                items: 3
-            }
-        }
-    }
+export default {
+  name: "ProductCategoryFakeLoader",
+  data() {
+    return {
+      items: 3
+    };
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-    .category-fake-item-container {
-        .fake-item-header {
-            height: 40px;
-            width: 200px;
-        }
+.category-fake-item-container {
+  .fake-item-header {
+    height: 40px;
+    width: 200px;
+  }
 
-        .fake-item-content {
-            height: 15px;
-            width: 100%;
-            margin-bottom: 16px;
-        }
-    }
-    .fake-item-product {
-            .fake-item-img {
-                width: 100%;
-                height: 250px;
-            }
+  .fake-item-content {
+    height: 15px;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+}
+.fake-item-product {
+  .fake-item-img {
+    width: 100%;
+    height: 250px;
+  }
 
-            .fake-text-content {
-                height: 9px;
-                left: 20px;
-                width: 85%;
-            }
-        }
+  .fake-text-content {
+    height: 9px;
+    left: 20px;
+    width: 85%;
+  }
+}
 </style>
-
-

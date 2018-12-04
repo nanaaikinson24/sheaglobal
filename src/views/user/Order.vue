@@ -95,70 +95,68 @@ import OrderItem from "@/components/OrderItem.vue";
 import axios from "axios";
 
 export default {
-    components: { heroBanner: TopHeroBanner, Spinner, OrderItem },
-    name: "Order",
-    data() {
-        return {
-            title: "Order #" + this.$route.params.orderno.trim(),
-            order: {},
-            contentLoaded: false,
-            hasError: false
-        };
+  components: { heroBanner: TopHeroBanner, Spinner, OrderItem },
+  name: "Order",
+  data() {
+    return {
+      title: "Order #" + this.$route.params.orderno.trim(),
+      order: {},
+      contentLoaded: false,
+      hasError: false
+    };
+  },
+  metaInfo: {
+    title: "Order History"
+  },
+  methods: {
+    fetchOrderDetails() {
+      let orderno = this.$route.params.orderno.trim();
+      if (!orderno) {
+        this.hasError = true;
+        return;
+      }
+
+      axios
+        .get(APIURL + "account/user/order/" + orderno)
+        .then(response => {
+          let res = response.data;
+
+          if (res.status == 200) {
+            this.contentLoaded = true;
+            this.hasError = false;
+            this.order = res.order;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    metaInfo: {
-        title: "Order History"
+    payBtn(val) {
+      if (val == 1) return true;
+      if (val == 2) return false;
+      if (val == 3) return false;
+      if (val == -1) return true;
+      if (val == -2) return true;
+      if (val == -3) return true;
     },
-    methods: {
-        fetchOrderDetails() {
-            let orderno = this.$route.params.orderno.trim();
-            if (!orderno) {
-                this.hasError = true;
-                return;
-            }
 
-            axios
-                .get(APIURL + "account/user/order/" + orderno)
-                .then(response => {
-                    let res = response.data;
+    completeOrder() {
+      $(".site-process-order").show();
 
-                    if (res.status == 200) {
-                        this.contentLoaded = true;
-                        this.hasError = false;
-                        this.order = res.order;
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        },
-        payBtn(val) {
-            if (val == 1) return true;
-            if (val == 2) return false;
-            if (val == 3) return false;
-            if (val == -1) return true;
-            if (val == -2) return true;
-            if (val == -3) return true;
-        },
+      axios.get(APIURL + `order/pay/${this.order.orderno}`).then(response => {
+        let res = response.data;
 
-        completeOrder() {
-            $(".site-process-order").show();
-
-            axios
-                .get(APIURL + `order/pay/${this.order.orderno}`)
-                .then(response => {
-                    let res = response.data;
-
-                    if (res.status == 200) {
-                        window.location.href = "" + res.link;
-                    } else {
-                        $(".site-process-order").hide();
-                        this.$swal("Error", res.msg, "error");
-                    }
-                });
+        if (res.status == 200) {
+          window.location.href = "" + res.link;
+        } else {
+          $(".site-process-order").hide();
+          this.$swal("Error", res.msg, "error");
         }
-    },
-    created() {
-        this.fetchOrderDetails();
+      });
     }
+  },
+  created() {
+    this.fetchOrderDetails();
+  }
 };
 </script>

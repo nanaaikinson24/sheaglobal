@@ -1,11 +1,12 @@
 <template>
-    <div>
+  <div>
 
-    </div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "ProductSidebar"
+    name: "Cash"
 };
 </script>
+

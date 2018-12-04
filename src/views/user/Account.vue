@@ -48,7 +48,7 @@
                 <div v-if="accountView == 'addresses'">
                     <div class="row">
                         <div class="col-md-12 col-lg-8 offset-lg-2 mb-3">
-                            <delivery></delivery>
+                            <delivery :delivery="computedDeliverydata"></delivery>
                         </div>
                     </div>
                 </div>
@@ -66,15 +66,16 @@
 </template>
 
 <script>
-var aboutImg = require('@/assets/img/about03.jpg');
+var aboutImg = require("@/assets/img/about03.jpg");
 
-import TopHeroBanner from '@/components/TopHeroBanner.vue';
-import Password from '@/components/user/Password.vue';
-import DetailsComp from '@/components/user/Details.vue';
-import Delivery from '@/components/user/Delivery.vue';
-import Spinner from '@/components/Bspinner.vue';
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
+import Password from "@/components/user/Password.vue";
+import DetailsComp from "@/components/user/Details.vue";
+import Delivery from "@/components/user/Delivery.vue";
+import Spinner from "@/components/Bspinner.vue";
 
-import axios from 'axios';
+import axios from "axios";
+import _ from "lodash";
 
 export default {
     components: {
@@ -84,17 +85,17 @@ export default {
         Spinner,
         Delivery
     },
-    name: 'Account',
+    name: "Account",
     data() {
         return {
-            title: 'My Profile',
+            title: "My Profile",
             userData: {
-                firstname: '',
-                lastname: ''
+                firstname: "",
+                lastname: ""
             },
             address: {},
             contentLoaded: false,
-            accountView: 'general'
+            accountView: "general"
         };
     },
     metaInfo() {
@@ -105,6 +106,9 @@ export default {
     computed: {
         computedUserData() {
             return this.$store.getters.userDetailsGetter;
+        },
+        computedDeliverydata() {
+            return this.$store.getters.deliveryInfoGetter;
         }
     },
     methods: {
@@ -115,18 +119,23 @@ export default {
             );
 
             if (data.status == 200) {
-                this.userData.firstname = data.data.firstname;
-                this.userData.lastname = data.data.lastname;
+                if (_.isEmpty(this.$store.getters.userDetailsGetter)) {
+                    this.userData.firstname = data.data.firstname;
+                    this.userData.lastname = data.data.lastname;
+                } else {
+                    this.userData.firstname = this.$store.getters.userDetailsGetter.firstname;
+                    this.userData.lastname = this.$store.getters.userDetailsGetter.lastname;
+                }
 
                 if (data.data.delivery) {
                     this.$store.commit(
-                        'setUserDeliveryInfo',
+                        "setUserDeliveryInfo",
                         data.data.delivery
                     );
                 }
 
                 if (data.data.billing) {
-                    this.$store.commit('setUserBillingInfo', data.data.billing);
+                    this.$store.commit("setUserBillingInfo", data.data.billing);
                 }
 
                 this.contentLoaded = true;
@@ -137,7 +146,7 @@ export default {
 
         fetchCountries() {
             axios
-                .get('https://restcountries.eu/rest/v2/all')
+                .get("https://restcountries.eu/rest/v2/all")
                 .then(response => {
                     this.countries = response.data;
                     //console.log(this.countries);
@@ -153,6 +162,3 @@ export default {
     }
 };
 </script>
-
-
-

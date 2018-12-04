@@ -137,75 +137,84 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    var date = new Date();
-    let cards = require('@/assets/img/cards.png');
-    export default {
-        name: "Footer",
-        data() {
-            return {
-                copyrightDate: date.getFullYear(),
-                subscribe: '',
-                cards: cards
-            }
-        },
-        methods: {
-            subscribeFunction(e)
-            {
-                var btn = e.currentTarget;
-                var sve = document.querySelector('.s-v-e');
-                if (sve) {
-                    sve.remove();
+import axios from "axios";
+var date = new Date();
+let cards = require("@/assets/img/cards.png");
+export default {
+  name: "Footer",
+  data() {
+    return {
+      copyrightDate: date.getFullYear(),
+      subscribe: "",
+      cards: cards
+    };
+  },
+  methods: {
+    subscribeFunction(e) {
+      var btn = e.currentTarget;
+      var sve = document.querySelector(".s-v-e");
+      if (sve) {
+        sve.remove();
+      }
+      this.$validator
+        .validateAll()
+        .then(result => {
+          if (result) {
+            btn.innerHtml =
+              '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>';
+            var subscribedEmail = { subscribeEmail: this.subscribe };
+            subscribedEmail = JSON.stringify(subscribedEmail);
+
+            axios
+              .post(APIURL + "subscribe", subscribedEmail)
+              .then(response => {
+                btn.innerHtml = "SUBMIT";
+                var res = response.data;
+                if (res.status == 200) {
+                  var html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                    ${res.msg}
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>`;
+                  document
+                    .querySelector(".formSubscribeMsg")
+                    .classList.add("my-3");
+                  document.querySelector(".formSubscribeMsg").innerHTML = html;
+                  this.subscribe = "";
+                  this.$validator.reset();
+                } else {
+                  if (res.status === "validation_errors") {
+                    res.errors.forEach(function(k, v) {
+                      document.getElementById(k).appendChild(v);
+                    });
+                  } else {
+                    var html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                    ${res.msg}
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>`;
+                    document
+                      .querySelector(".formSubscribeMsg")
+                      .classList.add("my-3");
+                    document.querySelector(
+                      ".formSubscribeMsg"
+                    ).innerHTML = html;
+                    this.subscribe = "";
+                    this.$validator.reset();
+                  }
                 }
-                this.$validator.validateAll().then((result) => {
-                    if (result) {
-                        btn.innerHtml = '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>';
-                        var subscribedEmail = {subscribeEmail: this.subscribe};
-                        subscribedEmail = JSON.stringify(subscribedEmail);
-
-                        axios.post(APIURL + 'subscribe', subscribedEmail).then(response => {
-                            btn.innerHtml = 'SUBMIT';
-                            var res = response.data;
-                            if (res.status == 200) {
-                                var html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                    ${res.msg}
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>`;
-                                document.querySelector('.formSubscribeMsg').classList.add('my-3');
-                                document.querySelector('.formSubscribeMsg').innerHTML = html;
-                                this.subscribe = '';
-                                this.$validator.reset();
-                            }
-                            else {
-                                if (res.status === 'validation_errors') {
-                                    res.errors.forEach(function (k, v) {
-                                        document.getElementById(k).appendChild(v);
-                                    })
-                                }
-                                else {
-                                    var html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                    ${res.msg}
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>`;
-                                    document.querySelector('.formSubscribeMsg').classList.add('my-3');
-                                    document.querySelector('.formSubscribeMsg').innerHTML = html;
-                                    this.subscribe = '';
-                                    this.$validator.reset();
-                                }
-                            }
-                        }).catch(err => {
-                            console.log(err);
-                        })
-
-                    }
-                }).catch(err => {
-                    console.log(err);
-                })
-            }
-        }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
+  }
+};
 </script>

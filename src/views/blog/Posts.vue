@@ -32,39 +32,39 @@
 </template>
 
 <script>
-    var aboutImg = require('../../assets/img/about03.jpg');
-    import TopHeroBanner from '../../components/TopHeroBanner.vue';
-    import BlogPostsfakeItem from '../../components/BlogPostsfakeItem.vue';
-    import axios from 'axios';
+var aboutImg = require("../../assets/img/about03.jpg");
+import TopHeroBanner from "../../components/TopHeroBanner.vue";
+import BlogPostsfakeItem from "../../components/BlogPostsfakeItem.vue";
+import axios from "axios";
 
-    export default {
-        components: {heroBanner: TopHeroBanner, blogFakeItem: BlogPostsfakeItem},
-        name: 'Posts',
-        metaInfo: {
-            title: 'Blog'
-        },
-        data() {
-            return {
-                bannerTitle: 'Blog',
-                aboutImg: aboutImg,
-                fakeItems: 6,
-                postsContentLoaded: false,
-                blogPosts: []
-            }
-        },
-        methods: {
-            async fetchBlogPosts() {
-                let posts = await axios.get(APIURL + 'blog');
-                this.blogPosts = posts.data;
-                this.postsContentLoaded = true;
-            },
-            
-            navigateToPost(dash, mask) {
-                this.$router.push({ path: `/blog/${dash}/${mask}` });
-            }
-        },
-        created() {
-            this.fetchBlogPosts();
-        }
+export default {
+  components: { heroBanner: TopHeroBanner, blogFakeItem: BlogPostsfakeItem },
+  name: "Posts",
+  metaInfo: {
+    title: "Blog"
+  },
+  data() {
+    return {
+      bannerTitle: "Blog",
+      aboutImg: aboutImg,
+      fakeItems: 6,
+      postsContentLoaded: false,
+      blogPosts: []
+    };
+  },
+  methods: {
+    async fetchBlogPosts() {
+      let posts = await axios.get(APIURL + "blog");
+      this.blogPosts = posts.data;
+      this.postsContentLoaded = true;
+    },
+
+    navigateToPost(dash, mask) {
+      this.$router.push({ path: `/blog/${dash}/${mask}` });
     }
+  },
+  created() {
+    this.fetchBlogPosts();
+  }
+};
 </script>

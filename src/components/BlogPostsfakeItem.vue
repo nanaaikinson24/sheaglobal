@@ -16,32 +16,31 @@
 </template>
 
 <script>
-    export default {
-        name: 'BlogPostsfakeItem'
-    }
+export default {
+  name: "BlogPostsfakeItem"
+};
 </script>
 
 <style lang="scss">
-    .blog-fake-container {
-        height: 350px;
+.blog-fake-container {
+  height: 350px;
 
-        .blog-fake-img-placeholder {
-            height: 200px
-        }
-        .blog-fake-details {
-            .fake-blog-date {
-                height: 5px;
-                width: 50%;
-            }
-
-            .fake-blog-header {
-                height: 9px;
-                width: 75%;
-            }
-            .fake-blog-subheader {
-                height: 12px;
-            }
-        }       
+  .blog-fake-img-placeholder {
+    height: 200px;
+  }
+  .blog-fake-details {
+    .fake-blog-date {
+      height: 5px;
+      width: 50%;
     }
-</style>
 
+    .fake-blog-header {
+      height: 9px;
+      width: 75%;
+    }
+    .fake-blog-subheader {
+      height: 12px;
+    }
+  }
+}
+</style>

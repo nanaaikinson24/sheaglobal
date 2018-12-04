@@ -20,19 +20,19 @@
 </template>
 
 <script>
-    import TopHeroBanner from '@/components/TopHeroBanner.vue';
-    export default {
-        components: {heroBanner: TopHeroBanner},
-        name: 'Cancellation',
-        data() {
-            return {
-                title: 'Cancellation Policy',
-            }
-        },
-        metaInfo() {
-            return {
-                title: 'Cancellation Policy'
-            }
-        }
-    }
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
+export default {
+  components: { heroBanner: TopHeroBanner },
+  name: "Cancellation",
+  data() {
+    return {
+      title: "Cancellation Policy"
+    };
+  },
+  metaInfo() {
+    return {
+      title: "Cancellation Policy"
+    };
+  }
+};
 </script>

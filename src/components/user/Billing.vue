@@ -112,71 +112,67 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
-    name: 'Billing',
-    data() {
-        return {
-            billing: {
-                fname: this.$store.state.userBillingInfo.firstname,
-                lname: this.$store.state.userBillingInfo.lastname,
-                address: this.$store.state.userBillingInfo.address,
-                address2: this.$store.state.userBillingInfo.address2,
-                city: this.$store.state.userBillingInfo.city,
-                country: this.$store.state.userBillingInfo.country,
-                email: this.$store.state.userBillingInfo.email
-            }
-        };
-    },
-    props: ['countries'],
-    methods: {
-        saveBillingInfo(e) {
-            let btn = e.currentTarget;
+  name: "Billing",
+  data() {
+    return {
+      billing: {
+        fname: this.$store.state.userBillingInfo.firstname,
+        lname: this.$store.state.userBillingInfo.lastname,
+        address: this.$store.state.userBillingInfo.address,
+        address2: this.$store.state.userBillingInfo.address2,
+        city: this.$store.state.userBillingInfo.city,
+        country: this.$store.state.userBillingInfo.country,
+        email: this.$store.state.userBillingInfo.email
+      }
+    };
+  },
+  props: ["countries"],
+  methods: {
+    saveBillingInfo(e) {
+      let btn = e.currentTarget;
 
-            this.$validator.validateAll().then(result => {
-                if (result) {
-                    btn.classList.add('is-loading', 'is-loading-sm');
-                    btn.setAttribute('disabled', '');
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          btn.classList.add("is-loading", "is-loading-sm");
+          btn.setAttribute("disabled", "");
 
-                    let params = new URLSearchParams();
-                    params.append('bfname', this.billing.fname);
-                    params.append('blname', this.billing.lname);
-                    params.append('baddress', this.billing.address);
-                    params.append('baddress2', this.billing.address2);
-                    params.append('bcity', this.billing.city);
-                    params.append('bcountry', this.billing.country);
-                    params.append('bemail', this.billing.email);
-                    params.append('user', this.$store.state.userData.mask);
+          let params = new URLSearchParams();
+          params.append("bfname", this.billing.fname);
+          params.append("blname", this.billing.lname);
+          params.append("baddress", this.billing.address);
+          params.append("baddress2", this.billing.address2);
+          params.append("bcity", this.billing.city);
+          params.append("bcountry", this.billing.country);
+          params.append("bemail", this.billing.email);
+          params.append("user", this.$store.state.userData.mask);
 
-                    axios
-                        .post(APIURL + 'users/update/billing', params)
-                        .then(response => {
-                            btn.classList.remove('is-loading', 'is-loading-sm');
-                            btn.removeAttribute('disabled');
-                            let res = response.data;
-                            if (res.status == 200) {
-                                this.$swal('Success', res.msg, 'success');
-                                this.$store.commit(
-                                    'setUserBillingInfo',
-                                    res.address
-                                );
-                            } else {
-                                if (res.status == 400) {
-                                    $.each(res.errors, (k, v) => {
-                                        $('#' + k).after(v);
-                                    });
-                                } else {
-                                    this.$swal('Error', res.msg, 'error');
-                                }
-                            }
-                        })
-                        .catch(err => {
-                            //
-                        });
+          axios
+            .post(APIURL + "users/update/billing", params)
+            .then(response => {
+              btn.classList.remove("is-loading", "is-loading-sm");
+              btn.removeAttribute("disabled");
+              let res = response.data;
+              if (res.status == 200) {
+                this.$swal("Success", res.msg, "success");
+                this.$store.commit("setUserBillingInfo", res.address);
+              } else {
+                if (res.status == 400) {
+                  $.each(res.errors, (k, v) => {
+                    $("#" + k).after(v);
+                  });
+                } else {
+                  this.$swal("Error", res.msg, "error");
                 }
+              }
+            })
+            .catch(err => {
+              //
             });
         }
+      });
     }
+  }
 };
 </script>
-

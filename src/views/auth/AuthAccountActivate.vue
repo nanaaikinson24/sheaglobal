@@ -29,33 +29,34 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    let moment = require('moment');
+import axios from "axios";
+let moment = require("moment");
 
-    export default {
-        name: 'AuthAccountActivate',
-        data() {
-            return {
-                invalidParams: false,
-                activationData: {}
-            }
-        },
-        methods: {
-            async fetchTokenDetails() {
-                let token = this.$route.params.authtoken;
-                let uuid = this.$route.params.authuserid;
+export default {
+  name: "AuthAccountActivate",
+  data() {
+    return {
+      invalidParams: false,
+      activationData: {}
+    };
+  },
+  methods: {
+    async fetchTokenDetails() {
+      let token = this.$route.params.authtoken;
+      let uuid = this.$route.params.authuserid;
 
-                if (!token && !uuid) {
-                    this.invalidParams = true;
-                    return false
-                }
-                let { data } = await axios.get(APIURL + `account/activate/${uuid}/${token}`);
-                this.activationData = data;
-            }
-        },
-        created() {
-            this.fetchTokenDetails();
-        }
+      if (!token && !uuid) {
+        this.invalidParams = true;
+        return false;
+      }
+      let { data } = await axios.get(
+        APIURL + `account/activate/${uuid}/${token}`
+      );
+      this.activationData = data;
     }
+  },
+  created() {
+    this.fetchTokenDetails();
+  }
+};
 </script>
-

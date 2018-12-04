@@ -25,19 +25,19 @@
 </template>
 
 <script>
-    import TopHeroBanner from '@/components/TopHeroBanner.vue';
-    export default {
-        components: {heroBanner: TopHeroBanner},
-        name: 'Refund',
-        data() {
-            return {
-                title: 'Refund Policy',
-            }
-        },
-        metaInfo() {
-            return {
-                title: 'Refund Policy'
-            }
-        }
-    }
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
+export default {
+  components: { heroBanner: TopHeroBanner },
+  name: "Refund",
+  data() {
+    return {
+      title: "Refund Policy"
+    };
+  },
+  metaInfo() {
+    return {
+      title: "Refund Policy"
+    };
+  }
+};
 </script>

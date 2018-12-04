@@ -22,11 +22,10 @@
 </template>
 
 <script>
-    export default {
-        name: 'Shipping'
-    }
+export default {
+  name: "Shipping"
+};
 </script>
 
 <style>
-
 </style>

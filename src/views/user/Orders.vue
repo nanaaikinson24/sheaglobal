@@ -63,77 +63,77 @@
 </template>
 
 <script>
-var aboutImg = require('@/assets/img/about03.jpg');
-import TopHeroBanner from '@/components/TopHeroBanner.vue';
-import Spinner from '@/components/Bspinner.vue';
+var aboutImg = require("@/assets/img/about03.jpg");
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
+import Spinner from "@/components/Bspinner.vue";
 
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-    components: { heroBanner: TopHeroBanner, Spinner },
-    name: 'Orders',
-    data() {
-        return {
-            title: 'Order History',
-            orderItems: [],
-            itemCount: 4,
-            contentLoaded: false
-        };
-    },
-    metaInfo() {
-        return {
-            title: this.title
-        };
-    },
-    methods: {
-        fetchUserOrders() {
-            let user = JSON.parse(localStorage.getItem('userData'));
-            if (user !== null || undefined !== user || user !== '') {
-                axios
-                    .get(APIURL + 'account/user/orders/' + user.mask)
-                    .then(response => {
-                        this.contentLoaded = true;
-                        let res = response.data;
+  components: { heroBanner: TopHeroBanner, Spinner },
+  name: "Orders",
+  data() {
+    return {
+      title: "Order History",
+      orderItems: [],
+      itemCount: 4,
+      contentLoaded: false
+    };
+  },
+  metaInfo() {
+    return {
+      title: this.title
+    };
+  },
+  methods: {
+    fetchUserOrders() {
+      let user = JSON.parse(localStorage.getItem("userData"));
+      if (user !== null || undefined !== user || user !== "") {
+        axios
+          .get(APIURL + "account/user/orders/" + user.mask)
+          .then(response => {
+            this.contentLoaded = true;
+            let res = response.data;
 
-                        if (res.status == 200) {
-                            this.orderItems = res.orders;
-                        }
-                    });
+            if (res.status == 200) {
+              this.orderItems = res.orders;
             }
-        },
-        orderStatus(val) {
-            if (val == 1) {
-                return 'Delivered';
-            }
-            if (val == 2) {
-                return 'Shipped';
-            }
-            if (val == 3) {
-                return 'Pending';
-            }
-            if (val == 4) {
-                return 'Cancelled';
-            }
-        },
-        paymentStatus(val) {
-            if (val == 1) return 'Pending';
-            if (val == 2) return 'On Hold';
-            if (val == 3) return 'Paid';
-            if (val == -1) return 'Expired';
-            if (val == -2) return 'Cancelled';
-            if (val == -3) return 'Declined';
-        },
-        payBtn(val) {
-            if (val == 1) return true;
-            if (val == 2) return false;
-            if (val == 3) return false;
-            if (val == -1) return true;
-            if (val == -2) return true;
-            if (val == -3) return true;
-        }
+          });
+      }
     },
-    created() {
-        this.fetchUserOrders();
+    orderStatus(val) {
+      if (val == 1) {
+        return "Delivered";
+      }
+      if (val == 2) {
+        return "Shipped";
+      }
+      if (val == 3) {
+        return "Pending";
+      }
+      if (val == 4) {
+        return "Cancelled";
+      }
+    },
+    paymentStatus(val) {
+      if (val == 1) return "Pending";
+      if (val == 2) return "On Hold";
+      if (val == 3) return "Paid";
+      if (val == -1) return "Expired";
+      if (val == -2) return "Cancelled";
+      if (val == -3) return "Declined";
+    },
+    payBtn(val) {
+      if (val == 1) return true;
+      if (val == 2) return false;
+      if (val == 3) return false;
+      if (val == -1) return true;
+      if (val == -2) return true;
+      if (val == -3) return true;
     }
+  },
+  created() {
+    this.fetchUserOrders();
+  }
 };
 </script>

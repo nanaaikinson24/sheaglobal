@@ -35,13 +35,13 @@
                     <div class="card" style="background-color: #fff; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);">
                         <div class="card-body">
                             <div class="order-details-container d-flex flex-row mb-3 justify-content-between">
-                                <div class="subtotal-title">
+                                <!-- <div class="subtotal-title">
                                     Subtotal
                                 </div>
 
                                 <div class="subtotal-price">
                                     AED {{ subtotal.toFixed(2) }}
-                                </div>
+                                </div> -->
                             </div>
 
                             <!-- <div class="order-details-container d-flex flex-row mb-3 justify-content-between">
@@ -68,7 +68,8 @@
 
                             <div class="order-details-container d-flex flex-row  mb-4 justify-content-between">
                                 <div class="total-title">
-                                    <h6>Total</h6>
+                                    <h6>Subtotal</h6>
+                                    <!-- <h6>Total</h6> -->
                                 </div>
 
                                 <div class="total-price">

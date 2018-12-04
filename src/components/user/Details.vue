@@ -43,57 +43,55 @@
 </template>
 
 <script>
-    import axios from 'axios'
-    export default {
-        name: 'Details',
-        props: ['email', 'firstname', 'lastname', 'mask'],
-        methods: {
-            //Update Details
-            updateDetails(e) {
-                $('.s-v-e').remove();
-                let btn = e.currentTarget;
+import axios from "axios";
+export default {
+  name: "Details",
+  props: ["email", "firstname", "lastname", "mask"],
+  methods: {
+    //Update Details
+    updateDetails(e) {
+      $(".s-v-e").remove();
+      let btn = e.currentTarget;
 
-                this.$validator.validateAll().then((result) => {
-                    if (result) {
-                        btn.setAttribute('disabled', '');
-                        btn.classList.add('is-loading', 'is-loading-sm');
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          btn.setAttribute("disabled", "");
+          btn.classList.add("is-loading", "is-loading-sm");
 
-                        let params = new URLSearchParams();
-                        params.append('fname', this.firstname);
-                        params.append('lname', this.lastname);
-                        params.append('mask', this.mask);
+          let params = new URLSearchParams();
+          params.append("fname", this.firstname);
+          params.append("lname", this.lastname);
+          params.append("mask", this.mask);
 
-                        axios.post(APIURL + `users/update/details`, params)
-                        .then((response) => {
-                            btn.removeAttribute('disabled', '');
-                            btn.classList.remove('is-loading', 'is-loading-sm');
+          axios
+            .post(APIURL + `users/update/details`, params)
+            .then(response => {
+              btn.removeAttribute("disabled", "");
+              btn.classList.remove("is-loading", "is-loading-sm");
 
-                            let res = response.data;
+              let res = response.data;
 
-                            if (res.status == 200) {
-                                this.$swal('Success', res.msg, 'success');
-                            }
-                            else {
-                                if (res.status == 400) {
-                                    $.each(res.errors, (k, v) => {
-                                        $('#' + k).after(v)
-                                    })
-                                }
-                                else {
-                                    $('.detailsFormMsg').html(`<p class="text-danger" id="detailsFormMsg">${res.msg}</p>`);
-                                    setTimeout(() => {
-                                        $('#detailsFormMsg').fadeOut();
-                                    }, 2500);
-                                }
-                            }
-                        })
-                        .catch((err) => {
-
-                        })
-                    }
-                })
-            },
+              if (res.status == 200) {
+                this.$swal("Success", res.msg, "success");
+              } else {
+                if (res.status == 400) {
+                  $.each(res.errors, (k, v) => {
+                    $("#" + k).after(v);
+                  });
+                } else {
+                  $(".detailsFormMsg").html(
+                    `<p class="text-danger" id="detailsFormMsg">${res.msg}</p>`
+                  );
+                  setTimeout(() => {
+                    $("#detailsFormMsg").fadeOut();
+                  }, 2500);
+                }
+              }
+            })
+            .catch(err => {});
         }
+      });
     }
+  }
+};
 </script>
-

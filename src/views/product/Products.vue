@@ -33,43 +33,45 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import Callback from '../../components/Callback.vue';
-    import FakeContent from '../../components/CategoryFakeContent.vue';
-    import TopHeroBanner from '../../components/TopHeroBanner.vue';
+import axios from "axios";
+import Callback from "../../components/Callback.vue";
+import FakeContent from "../../components/CategoryFakeContent.vue";
+import TopHeroBanner from "../../components/TopHeroBanner.vue";
 
-    export default {
-        components: {appCallback: Callback, fakeContent: FakeContent, heroBanner: TopHeroBanner},
-        name: 'Products',
-        data() {
-            return {
-                productCategories: [],
-                fakeContentItems: 6,
-                categoryContentLoaded: false,
-                bannerTitle: 'Our Products'
-            }
-        },
-        metaInfo: {
-            title: 'Our Products'
-        },
-        methods: {
-
-            //Fetch product categories
-            fetchProductCategories() {
-
-                axios.get(APIURL + 'productcategories').then(response => {
-
-                    this.productCategories = response.data;
-                    this.categoryContentLoaded = true;
-
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-            }
-        },
-        created() {
-            this.fetchProductCategories();
-        }
+export default {
+  components: {
+    appCallback: Callback,
+    fakeContent: FakeContent,
+    heroBanner: TopHeroBanner
+  },
+  name: "Products",
+  data() {
+    return {
+      productCategories: [],
+      fakeContentItems: 6,
+      categoryContentLoaded: false,
+      bannerTitle: "Our Products"
+    };
+  },
+  metaInfo: {
+    title: "Our Products"
+  },
+  methods: {
+    //Fetch product categories
+    fetchProductCategories() {
+      axios
+        .get(APIURL + "productcategories")
+        .then(response => {
+          this.productCategories = response.data;
+          this.categoryContentLoaded = true;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
+  },
+  created() {
+    this.fetchProductCategories();
+  }
+};
 </script>

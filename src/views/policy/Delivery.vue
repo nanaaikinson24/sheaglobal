@@ -21,19 +21,19 @@
 </template>
 
 <script>
-    import TopHeroBanner from '@/components/TopHeroBanner.vue';
-    export default {
-        components: {heroBanner: TopHeroBanner},
-        name: 'Delivery',
-        data() {
-            return {
-                title: 'Delivery Policy',
-            }
-        },
-        metaInfo() {
-            return {
-                title: 'Delivery Policy'
-            }
-        }
-    }
+import TopHeroBanner from "@/components/TopHeroBanner.vue";
+export default {
+  components: { heroBanner: TopHeroBanner },
+  name: "Delivery",
+  data() {
+    return {
+      title: "Delivery Policy"
+    };
+  },
+  metaInfo() {
+    return {
+      title: "Delivery Policy"
+    };
+  }
+};
 </script>

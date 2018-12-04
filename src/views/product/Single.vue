@@ -157,159 +157,157 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
-    import axios from 'axios';
-    import Bspinner from '@/components/Bspinner.vue'
-    
-    export default {
-        name: 'Single',
-        components: {BSpinner: Bspinner},
-        data() {
-            return {
-                productData: {},
-                relatedProducts: [],
-                productImages: [],
-                show404: false,
-                quantityError: {
-                    status: false,
-                    msg: ''
-                },
-                contentLoaded: false
-            }
-        },
-        metaInfo() {
-            return {
-                title: this.productData.name
-            }
-        },
-        methods: {
-            ...mapActions(['ADD_TO_CART']),
+import { mapActions } from "vuex";
+import axios from "axios";
+import Bspinner from "@/components/Bspinner.vue";
 
-            //Fetch product details
-            fetchProductDetails() {
-                var dash, mask;
-                dash = this.$route.params.prodash;
-                mask = this.$route.params.promask;
+export default {
+  name: "Single",
+  components: { BSpinner: Bspinner },
+  data() {
+    return {
+      productData: {},
+      relatedProducts: [],
+      productImages: [],
+      show404: false,
+      quantityError: {
+        status: false,
+        msg: ""
+      },
+      contentLoaded: false
+    };
+  },
+  metaInfo() {
+    return {
+      title: this.productData.name
+    };
+  },
+  methods: {
+    ...mapActions(["ADD_TO_CART"]),
 
-                axios.get(APIURL + 'product?dash=' + dash +'&mask=' + mask).then((response) => {
-                    this.contentLoaded = true;
+    //Fetch product details
+    fetchProductDetails() {
+      var dash, mask;
+      dash = this.$route.params.prodash;
+      mask = this.$route.params.promask;
 
-                    if (response.data.status == 200) {
-                        var res = response.data;
-                        
-                        this.relatedProducts = res.data.relatedproducts;
-                        this.title = res.data.name;
-                        this.productData = {
-                            name: res.data.name,
-                            category: res.data.category,
-                            categorymask: res.data.categorymask,
-                            categorydash: res.data.categorydash,
-                            description: res.data.description,
-                            mask:  res.data.mask,
-                            price:  res.data.price
-                        };
-                        this.productImages = res.data.images;
+      axios
+        .get(APIURL + "product?dash=" + dash + "&mask=" + mask)
+        .then(response => {
+          this.contentLoaded = true;
 
-                        this.$nextTick(function() {
-                            $('.product-carousel').owlCarousel({
-                                loop: true,
-                                items: 1,
-                                thumbImage: false,
+          if (response.data.status == 200) {
+            var res = response.data;
 
-                                // Enable this if you have pre-rendered thumbnails in your html instead of letting this plugin generate them. This is recommended as it will prevent FOUC
-                                thumbsPrerendered: true,
-                                
-                                // Class that will be used on the thumbnail container
-                                thumbContainerClass: 'owl-thumbs',
-                                
-                                // Class that will be used on the thumbnail item's
-                                thumbItemClass: 'owl-thumb-item'
-                                
-                            });
+            this.relatedProducts = res.data.relatedproducts;
+            this.title = res.data.name;
+            this.productData = {
+              name: res.data.name,
+              category: res.data.category,
+              categorymask: res.data.categorymask,
+              categorydash: res.data.categorydash,
+              description: res.data.description,
+              mask: res.data.mask,
+              price: res.data.price
+            };
+            this.productImages = res.data.images;
 
-                            $('#relatedProductsCarousel').owlCarousel({
-                                loop: false,
-                                autoplay: true,
-                                margin: 10,
-                                nav: true,
-                                responsive:{ 
-                                    0:{ items:1, nav:false, dots:true }, 
-                                    350: {items: 2, nav:false, dots:true},  
-                                    600:{ items:3, nav:false, dots:true }, 
-                                    1000:{items:4, nav:false, dots:true }
-                                }
-                            });
-                        })
-                    }
-                    else {
-                        this.show404 = true;
-                    }
-                })
-                .catch(err => {
+            this.$nextTick(function() {
+              $(".product-carousel").owlCarousel({
+                loop: true,
+                items: 1,
+                thumbImage: false,
 
-                })
-            },
+                // Enable this if you have pre-rendered thumbnails in your html instead of letting this plugin generate them. This is recommended as it will prevent FOUC
+                thumbsPrerendered: true,
 
-            //To text
-            contentToText(content) {
-                return $('<div/>').html(content).text();
-            },
+                // Class that will be used on the thumbnail container
+                thumbContainerClass: "owl-thumbs",
 
-            //Add to cart
-            addToCart(mask, product, e) {
-                var self = this;
-                var btn = e.currentTarget;
-                var productMask = mask;
-                var quantity = document.querySelector('#productQuantity-'+ mask).value;
-                quantity = Number(quantity);
+                // Class that will be used on the thumbnail item's
+                thumbItemClass: "owl-thumb-item"
+              });
 
-                if (typeof quantity != 'number' || typeof quantity == NaN) {
-                    this.quantityError.status = true;
-                    this.quantityError.msg = 'Please enter a valid number';
-                    return false;
+              $("#relatedProductsCarousel").owlCarousel({
+                loop: false,
+                autoplay: true,
+                margin: 10,
+                nav: true,
+                responsive: {
+                  0: { items: 1, nav: false, dots: true },
+                  350: { items: 2, nav: false, dots: true },
+                  600: { items: 3, nav: false, dots: true },
+                  1000: { items: 4, nav: false, dots: true }
                 }
+              });
+            });
+          } else {
+            this.show404 = true;
+          }
+        })
+        .catch(err => {});
+    },
 
-                if (quantity < 1) {
-                    this.quantityError.status = true;
-                    this.quantityError.msg = 'Please enter a quantity greater than 0';
-                    return false;
-                }
+    //To text
+    contentToText(content) {
+      return $("<div/>")
+        .html(content)
+        .text();
+    },
 
-                this.quantityError.status = false;
+    //Add to cart
+    addToCart(mask, product, e) {
+      var self = this;
+      var btn = e.currentTarget;
+      var productMask = mask;
+      var quantity = document.querySelector("#productQuantity-" + mask).value;
+      quantity = Number(quantity);
 
-                var productData = { 
-                    name: product.name,
-                    quantity: quantity,
-                    category: '',
-                    mask: mask, 
-                    price: product.price,
-                    image: this.productImages[0].image,
-                    totalPrice: (quantity * product.price).toFixed(2)
-                };
+      if (typeof quantity != "number" || typeof quantity == NaN) {
+        this.quantityError.status = true;
+        this.quantityError.msg = "Please enter a valid number";
+        return false;
+      }
 
-                $(btn).attr('disabled', '').addClass('is-loading is-loading-sm');
+      if (quantity < 1) {
+        this.quantityError.status = true;
+        this.quantityError.msg = "Please enter a quantity greater than 0";
+        return false;
+      }
 
-                setTimeout(() => {
+      this.quantityError.status = false;
 
-                    $(btn).removeAttr('disabled').removeClass('is-loading is-loading-sm');
-                    this.ADD_TO_CART(productData);
-                    document.querySelector('#productQuantity-'+ mask).value = 1;
+      var productData = {
+        name: product.name,
+        quantity: quantity,
+        category: "",
+        mask: mask,
+        price: product.price,
+        image: this.productImages[0].image,
+        totalPrice: (quantity * product.price).toFixed(2)
+      };
 
-                }, 500);
-                
-            }
-        },
-        created() {
-            this.fetchProductDetails();
-        }
+      $(btn)
+        .attr("disabled", "")
+        .addClass("is-loading is-loading-sm");
+
+      setTimeout(() => {
+        $(btn)
+          .removeAttr("disabled")
+          .removeClass("is-loading is-loading-sm");
+        this.ADD_TO_CART(productData);
+        document.querySelector("#productQuantity-" + mask).value = 1;
+      }, 500);
     }
+  },
+  created() {
+    this.fetchProductDetails();
+  }
+};
 </script>
 
 <style lang="scss">
-    .product-contact {
-        background-color: #d4d4d4;
-    }
+.product-contact {
+  background-color: #d4d4d4;
+}
 </style>
-
-
-
