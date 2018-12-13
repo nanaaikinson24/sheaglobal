@@ -1,56 +1,53 @@
 <template>
-    <div class="shoppingCartItem py-4">
-
-        <div class="d-flex flex-md-row">
-            <div class="col-md-4">
-                <div class="cartItem-img text-center">
-                    <img :src="cartItem.image" :alt="cartItem.name">
-                </div>
-            </div>
-
-            <!-- Product info -->
-            <div class="col-md-6">
-                <p>
-                    {{ cartItem.name }}
-                    <!-- <small class="d-block" style="color: #878787">Category</small> -->
-                </p> 
-
-                <h6 class="my-3">AED {{ cartItem.totalPrice }}</h6>
-
-                <div>
-                    <div class="priceupd">
-                        <div class="pricebtn">
-                            <button class="minus"  :disabled="quantity == 1"
-                                :id="itemMask"
-                                v-on:click="decreaseQuantity($event, itemMask)"
-                            > – </button>
-
-                            <div class="priceval"> 
-                                <input type="text" v-model.number="quantity" class="prodqty" name="quantity" 
-                                    v-on:keypress="isNumberKey($event)" autocomplete="off"
-                                >
-                            </div>
-
-                            <button class="plus"
-                                :id="itemMask"
-                                v-on:click="increaseQuantity($event, itemMask)"
-                            > + </button>
-                        </div>
-
-                        <div class="remvbtn">
-                            <button class="btn btn-link is-danger"
-                                @click="removeFromCart(arrIndex)"
-                            >
-                                Remove
-                            </button>
-                        </div>
-                    </div>
-                </div>  
-            </div>
-            
+  <div class="shoppingCartItem py-4">
+    <div class="d-flex flex-md-row">
+      <div class="col-md-4">
+        <div class="cartItem-img text-center">
+          <img :src="cartItem.image" :alt="cartItem.name">
         </div>
+      </div>
+
+      <!-- Product info -->
+      <div class="col-md-6">
+        <p>
+          {{ cartItem.name }}
+          <!-- <small class="d-block" style="color: #878787">Category</small> -->
+        </p>
+
+        <h6 class="my-3">AED {{ cartItem.totalPrice }}</h6>
+
+        <div>
+          <div class="priceupd">
+            <div class="pricebtn">
+              <button
+                class="minus"
+                :disabled="quantity == 1"
+                :id="itemMask"
+                v-on:click="decreaseQuantity($event, itemMask)"
+              >–</button>
+
+              <div class="priceval">
+                <input
+                  type="text"
+                  v-model.number="quantity"
+                  class="prodqty"
+                  name="quantity"
+                  v-on:keypress="isNumberKey($event)"
+                  autocomplete="off"
+                >
+              </div>
+
+              <button class="plus" :id="itemMask" v-on:click="increaseQuantity($event, itemMask)">+</button>
+            </div>
+
+            <div class="remvbtn">
+              <button class="btn btn-link is-danger" @click="removeFromCart(arrIndex)">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
+  </div>
 </template>
 
 <script>

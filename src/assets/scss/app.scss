@@ -907,3 +907,9 @@ section.hero.hero-home h1 {
         color: #2c8a28 !important;
     }
 }
+
+.custom-radio .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: rgb(67, 193, 62);
+    outline: none!important;
+    box-shadow: none!important;
+}

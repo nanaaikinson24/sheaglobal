@@ -1,169 +1,152 @@
 <template>
-    <div class="app-product">
-        <div class="container my-5">
+  <div class="app-product">
+    <div class="container my-5">
+      <!-- Breadcrumb -->
+      <div class="row mb-5" v-if="contentLoaded">
+        <div class="col-sm-12">
+          <div aria-label="breadcrumb" class="shea-global-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <router-link to="/">Home</router-link>
+              </li>
 
-            <!-- Breadcrumb -->
-            <div class="row mb-5" v-if="contentLoaded">
-                <div class="col-sm-12">
+              <li class="breadcrumb-item">
+                <router-link
+                  :to="'/category/' + productData.categorydash + '/' + productData.categorymask"
+                >
+                  <span class="text-capitalize">{{ productData.category }}</span>
+                </router-link>
+              </li>
 
-                    <div aria-label="breadcrumb" class="shea-global-breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <router-link to="/">Home</router-link>
-                            </li>
-
-                            <li class="breadcrumb-item">
-                                <router-link :to="'/category/' + productData.categorydash + '/' + productData.categorymask">
-                                    <span class="text-capitalize">
-                                        {{ productData.category }}
-                                    </span>
-                                </router-link>
-                            </li>
-                            
-                            <li class="breadcrumb-item active" aria-current="page">
-                                {{ productData.name }}                            
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product details -->
-            <div class="row" v-if="contentLoaded">
-
-                <!-- Product images -->
-                <div class="col-md-2 product-image-container d-none d-md-block">
-                    <div data-slider-id="1" class="owl-thumbs d-flex flex-column">
-                            <button class="owl-thumb-item" v-for="(thumb, i) in productImages" :key="i">
-                                <img :src="thumb.image" :alt="productData.name" >
-                            </button>
-                        </div>
-                </div>
-
-                <div class="col-md-4">
-
-                    <div class="product-image-container">
-                        <div class="product-carousel owl-carousel" data-slider-id="1">
-                            <div class="carousel-img" v-for="(image, i) in productImages" :key="i">
-                                <img :src="image.image" :alt="productData.name" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <p style="color: #43C13E" v-if="productData.quantity < 1">Out of Stock</p>
-                        <h4>{{ productData.name }}</h4>
-
-                        <h5 class="mt-4">AED {{ productData.price }}</h5>
-                    </div>
-
-                    <div class="mb-5">
-                        <p>
-                            {{ contentToText(productData.description) }}
-                        </p>
-                    </div>
-
-                    <hr>
-
-                    <div class="mb-3">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <input type="number" name="quantity" :id="'productQuantity-'+productData.mask" class="form-control"
-                                    min="1" value="1"
-                                >
-                            </div>
-
-                            <div class="col-md-4">
-                                <button class="btn btn-success" 
-                                    @click="addToCart(productData.mask, productData, $event)"
-                                    :disabled="productData.quantity < 1"
-                                >
-                                    Add to cart
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row" v-if="quantityError.status">
-                            <div class="col-md-12">
-                                <p class="text-danger">{{ quantityError.msg }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-
-                    <div class="product-contact py-2 d-flex flex-row px-3 mt-5">
-                        <div class="pt-2">
-                            Distributer? To get this product, please contact us
-                        </div>
-                        <div class="ml-auto">
-                            <router-link to="/contact" class="btn btn-success">
-                            Contact Us</router-link>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- related products -->
-            <div class="row my-5 " v-if="contentLoaded">
-                <div class="col-md-12 pb-3">
-                    <div class="header-title-hr-u mb-3 shea-title">
-                        <h3><span>Related Products</span></h3>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="owl-carousel" id="relatedProductsCarousel">
-                        <div class="product-container" v-for="(product, index) in relatedProducts" :key="index">
-                            <router-link :to="'/product/' + product.url_dash + '/' + product.mask">
-                                <div class="details">
-                                    <div class="product-img text-center">
-                                    
-                                        <img :src="product.image" :alt="product.name">
-                                        
-                                    </div>
-
-                                    <div class="related-product-content" >
-                                        
-                                        <div class="text-center mt-3">
-                                            <p>
-                                                {{ product.name }}
-                                                <small class="d-block text-secondary">{{ product.category }}</small>
-                                            </p>
-                                            <p>AED {{ product.price }}</p>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-
-                                <div class="ribbon" v-if="product.quantity < 1">
-                                    <small>Out of Stock</small>
-                                </div>
-                            </router-link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row" v-if="!contentLoaded">
-                <div class="col-md-12 text-center">
-                    <b-spinner></b-spinner>
-                </div>
-            </div>
-
+              <li class="breadcrumb-item active" aria-current="page">{{ productData.name }}</li>
+            </ol>
+          </div>
         </div>
+      </div>
+
+      <!-- Product details -->
+      <div class="row" v-if="contentLoaded">
+        <!-- Product images -->
+        <div class="col-md-2 product-image-container d-none d-md-block">
+          <div data-slider-id="1" class="owl-thumbs d-flex flex-column">
+            <button class="owl-thumb-item" v-for="(thumb, i) in productImages" :key="i">
+              <img :src="thumb.image" :alt="productData.name">
+            </button>
+          </div>
+        </div>
+
+        <!-- Product name -->
+        <div class="col-md-4">
+          <div class="product-image-container">
+            <div class="product-carousel owl-carousel" data-slider-id="1">
+              <div class="carousel-img" v-for="(image, i) in productImages" :key="i">
+                <img :src="image.image" :alt="productData.name" class="img-fluid">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-4">
+            <p style="color: #43C13E" v-if="productData.quantity < 1">Out of Stock</p>
+            <h4>{{ productData.name }}</h4>
+
+            <!-- Product price -->
+            <div v-if="productData.specialoffer">
+              <h5 class="mt-4">
+                <del class="text-danger pr-2">AED {{ productData.price }}</del>
+                <span>AED {{ productData.offerprice }}</span>
+              </h5>
+            </div>
+            <div v-if="!productData.specialoffer">
+              <h5 class="mt-4">AED {{ productData.price }}</h5>
+            </div>
+          </div>
+
+          <div class="mb-5">
+            <p>{{ contentToText(productData.description) }}</p>
+          </div>
+
+          <hr>
+
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-4">
+                <input
+                  type="number"
+                  name="quantity"
+                  :id="'productQuantity-'+productData.mask"
+                  class="form-control"
+                  min="1"
+                  value="1"
+                >
+              </div>
+
+              <div class="col-md-4">
+                <button
+                  class="btn btn-success"
+                  @click="addToCart(productData.mask, productData, $event)"
+                  :disabled="productData.quantity < 1"
+                >Add to cart</button>
+              </div>
+            </div>
+            <div class="row" v-if="quantityError.status">
+              <div class="col-md-12">
+                <p class="text-danger">{{ quantityError.msg }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-contact py-2 d-flex flex-row px-3 mt-5">
+            <div class="pt-2">Distributer? To get this product, please contact us</div>
+            <div class="ml-auto">
+              <router-link to="/contact" class="btn btn-success">Contact Us</router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- related products -->
+      <div class="row my-5" v-if="contentLoaded">
+        <div class="col-md-12 pb-3">
+          <div class="header-title-hr-u mb-3 shea-title">
+            <h3>
+              <span>Related Products</span>
+            </h3>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="owl-carousel" id="relatedProductsCarousel">
+            <product-item
+              :product="product"
+              v-for="(product, index) in relatedProducts"
+              :key="index"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row" v-if="!contentLoaded">
+        <div class="col-md-12 text-center" style="min-height: 450px;">
+          <b-spinner></b-spinner>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import axios from "axios";
-import Bspinner from "@/components/Bspinner.vue";
+import BSpinner from "@/components/Bspinner.vue";
+import ProductItem from "@/components/ProductItem.vue";
+import moment from "moment";
+import _ from "lodash";
 
 export default {
   name: "Single",
-  components: { BSpinner: Bspinner },
+  components: { BSpinner, ProductItem },
   data() {
     return {
       productData: {},
@@ -187,7 +170,7 @@ export default {
 
     //Fetch product details
     fetchProductDetails() {
-      var dash, mask;
+      let dash, mask;
       dash = this.$route.params.prodash;
       mask = this.$route.params.promask;
 
@@ -197,7 +180,7 @@ export default {
           this.contentLoaded = true;
 
           if (response.data.status == 200) {
-            var res = response.data;
+            let res = response.data;
 
             this.relatedProducts = res.data.relatedproducts;
             this.title = res.data.name;
@@ -208,8 +191,22 @@ export default {
               categorydash: res.data.categorydash,
               description: res.data.description,
               mask: res.data.mask,
-              price: res.data.price
+              price: res.data.price,
+              catmask: res.data.catmask,
+              submask: res.data.submask
             };
+
+            // Check for coupon
+            if (!_.isEmpty(res.data.specialoffer)) {
+              const dateNow = moment();
+              const dateExpiresAt = moment(res.data.specialofferenddate);
+              if (dateNow.diff(dateExpiresAt, "days") <= 0) {
+                this.productData.offerprice = res.data.offerprice;
+                this.productData.specialoffer = 1;
+              }
+            }
+
+            // Set images
             this.productImages = res.data.images;
 
             this.$nextTick(function() {
@@ -257,10 +254,10 @@ export default {
 
     //Add to cart
     addToCart(mask, product, e) {
-      var self = this;
-      var btn = e.currentTarget;
-      var productMask = mask;
-      var quantity = document.querySelector("#productQuantity-" + mask).value;
+      let self = this;
+      let btn = e.currentTarget;
+      let productMask = mask;
+      let quantity = document.querySelector("#productQuantity-" + mask).value;
       quantity = Number(quantity);
 
       if (typeof quantity != "number" || typeof quantity == NaN) {
@@ -277,14 +274,23 @@ export default {
 
       this.quantityError.status = false;
 
-      var productData = {
+      const totalcost = product.specialoffer
+        ? product.offerprice * quantity
+        : product.price * quantity;
+
+      let productData = {
         name: product.name,
         quantity: quantity,
-        category: "",
+        category: product.category,
+        catmask: product.catmask,
+        submask: product.submask,
         mask: mask,
+        specialoffer: product.specialoffer ? product.specialoffer : null,
+        offerprice: product.specialoffer ? product.offerprice : 0,
         price: product.price,
         image: this.productImages[0].image,
-        totalPrice: (quantity * product.price).toFixed(2)
+        totalPrice: totalcost.toFixed(2),
+        couponprice: 0
       };
 
       $(btn)

@@ -17,6 +17,7 @@
         "popper.js": "^1.14.4",
         "register-service-worker": "^1.0.0",
         "store2": "^2.7.0",
+        "sweetalert": "^2.1.2",
         "vee-validate": "^2.1.0-beta.7",
         "vue": "^2.5.17",
         "vue-form-wizard": "^0.8.4",

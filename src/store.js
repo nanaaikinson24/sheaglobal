@@ -3,7 +3,8 @@ import Vuex from "vuex";
 import axios from "axios";
 import router from "./router";
 import { cities } from "./config";
-import moment from 'moment';
+import moment from "moment";
+import _ from "lodash";
 
 Vue.use(Vuex);
 
@@ -19,7 +20,9 @@ export default new Vuex.Store({
     userBillingInfo: {},
     is_logged_in: false,
     cities: cities,
-    expirec: null
+    expirec: null,
+    vouchercode: "",
+    subtotalprice: 0
   },
 
   //Getters
@@ -34,18 +37,34 @@ export default new Vuex.Store({
       return state.cartCount;
     },
 
+    // Subtotal calculator
+    subtotalCalculator(state) {
+      const subtotal = state.cart.reduce(function (acc, cur) {
+        const currentPrice = cur.specialoffer
+          ? cur.offerprice * cur.quantity
+          : cur.price * cur.quantity;
+
+        const total = acc + currentPrice;
+        return total;
+      }, 0);
+
+      state.subtotalprice = parseFloat(subtotal);
+      return state.subtotalprice;
+    },
+
+    //Subtotal getter
+    subtotalGetter(state, getters) {
+      return state.subtotalprice;
+    },
+
     //Cart items
     cartGetter(state) {
       return state.cart;
     },
 
     //Tax
-    taxGetter(state) {
-      let sub = state.cart.reduce(function (acc, cur) {
-        let total = acc + cur.price * cur.quantity;
-        return total;
-      }, 0);
-      let tax = sub * state.vat;
+    taxGetter(state, getters) {
+      const tax = getters.subtotalGetter * state.vat;
       return tax;
     },
 
@@ -83,26 +102,38 @@ export default new Vuex.Store({
         window.localStorage.getItem("sheaglobalCartExpires")
       );
 
-      if (expires !== null || undefined !== expires) {
+      if (!_.isEmpty(expires)) {
         let now = moment(new Date());
         if (now.diff(expires, "hours") > 0) {
           this.commit("emptyCart");
           return false;
         }
+        state.expirec = expires;
 
-        if (sheaglobalCart !== null) {
+        if (!_.isEmpty(sheaglobalCart)) {
           state.cart = sheaglobalCart;
 
-          //Computate total cart quantity and price
+          //Compute total cart quantity and price
           let quantity = 0;
           let totalCost = 0;
 
-          for (let item of state.cart) {
+          _.forEach(state.cart, item => {
             quantity += item.quantity;
-            totalCost += item.quantity * item.price;
-          }
+          });
+
+          const subtotal = state.cart.reduce(function (acc, cur) {
+            const currentPrice = cur.specialoffer
+              ? cur.offerprice * cur.quantity
+              : cur.price * cur.quantity;
+
+            const total = acc + currentPrice;
+            return total;
+          }, 0);
+
+          state.subtotalprice = parseFloat(subtotal);
+
           state.cartCount = quantity;
-          state.cartTotalPrice = totalCost.toFixed(2);
+          state.cartTotalPrice = parseFloat(totalCost).toFixed(2);
         }
       }
     },
@@ -158,6 +189,14 @@ export default new Vuex.Store({
       state.shipping = value;
     },
 
+    setSubtotalPrice(state, value) {
+      state.subtotalprice = value;
+      //this.commit("saveCart");
+    },
+    setVoucherValue(state, value) {
+      state.vouchercode = value;
+    },
+
     //set delivery address
     setUserDeliveryInfo(state, value) {
       state.userDeliveryInfo = value;
@@ -172,25 +211,49 @@ export default new Vuex.Store({
       let quantity = 0;
       let totalCost = 0;
 
-      //Check for existing item
-      let found = state.cart.find(product => product.mask == item.mask);
+      if (!_.isEmpty(state.cart)) {
+        //Check for existing item
+        const found = _.find(state.cart, product => product.mask === item.mask);
 
-      if (found) {
-        found.quantity += item.quantity;
-        found.totalPrice = (found.quantity * found.price).toFixed(2);
+        if (typeof found === "undefined" || found === null) {
+          //Add new if not found
+          state.cart.push(item);
+        } else {
+          found.quantity += item.quantity;
+
+          // Set price for item
+          if (!_.isEmpty(found.specialoffer)) {
+            found.totalPrice = (found.quantity * found.offerprice).toFixed(2);
+          } else {
+            found.totalPrice = (found.quantity * found.price).toFixed(2);
+          }
+        }
       } else {
         //Add new if not found
         state.cart.push(item);
       }
 
       //Computate total cart quantity and price
-      for (let item of state.cart) {
+      _.forEach(state.cart, item => {
         quantity += item.quantity;
-        totalCost += item.quantity * item.price;
-      }
-      state.cartCount = quantity;
-      state.cartTotalPrice = totalCost.toFixed(2);
+      });
 
+      const subtotal = state.cart.reduce(function (acc, cur) {
+        const currentPrice = cur.specialoffer
+          ? cur.offerprice * cur.quantity
+          : cur.price * cur.quantity;
+
+        const total = acc + currentPrice;
+        return total;
+      }, 0);
+
+      state.subtotalprice = parseFloat(subtotal);
+
+      // Set cart count
+      state.cartCount = quantity;
+      state.cartTotalPrice = parseFloat(totalCost).toFixed(2);
+
+      // Set cart expiration
       let today = new Date();
       today.setHours(today.getHours() + 8);
       state.expirec = today;
@@ -202,29 +265,50 @@ export default new Vuex.Store({
 
     //Update cart
     updateCartItem(state, item) {
-      let found = state.cart.find(product => product.mask == item.mask);
+      if (!_.isEmpty(state.cart)) {
+        //Check for existing item
+        const found = _.find(state.cart, product => product.mask === item.mask);
 
-      if (found) {
-        found.quantity = Number(item.quantity);
-        found.totalPrice = (found.quantity * found.price).toFixed(2);
+        if (typeof found !== "undefined" || found !== null) {
+          found.quantity = Number(item.quantity);
 
-        let quantity = 0;
-        let totalCost = 0;
+          // Set price for item
+          if (found.specialoffer) {
+            found.totalPrice = (found.quantity * found.offerprice).toFixed(2);
+          } else {
+            found.totalPrice = (found.quantity * found.price).toFixed(2);
+          }
 
-        for (let item of state.cart) {
-          quantity += item.quantity;
-          totalCost += item.quantity * item.price;
+          let quantity = 0;
+          let totalCost = 0;
+
+          //Computate total cart quantity and price
+          _.forEach(state.cart, item => {
+            quantity += item.quantity;
+          });
+
+          const subtotal = state.cart.reduce(function (acc, cur) {
+            const currentPrice = cur.specialoffer
+              ? cur.offerprice * cur.quantity
+              : cur.price * cur.quantity;
+
+            const total = acc + currentPrice;
+            return total;
+          }, 0);
+
+          state.subtotalprice = parseFloat(subtotal);
+
+          state.cartCount = quantity;
+          state.cartTotalPrice = parseFloat(totalCost).toFixed(2);
+
+          let today = new Date();
+          today.setHours(today.getHours() + 8);
+          state.expirec = today;
+
+          //Save to storage
+          this.commit("saveCart");
+          this.commit("saveExpireCart");
         }
-        state.cartCount = quantity;
-        state.cartTotalPrice = totalCost.toFixed(2);
-
-        let today = new Date();
-        today.setHours(today.getHours() + 8);
-        state.expirec = today;
-
-        //Save to storage
-        this.commit("saveCart");
-        this.commit("saveExpireCart");
       }
     },
 
@@ -240,7 +324,7 @@ export default new Vuex.Store({
         totalCost += item.quantity * item.price;
       }
       state.cartCount = quantity;
-      state.cartTotalPrice = totalCost.toFixed(2);
+      state.cartTotalPrice = parseFloat(totalCost).toFixed(2);
 
       this.commit("saveCart");
     },
@@ -249,6 +333,8 @@ export default new Vuex.Store({
     emptyCart(state) {
       state.cart = [];
       state.cartCount = 0;
+      state.subtotalprice = 0;
+      state.vouchercode = "";
 
       window.localStorage.removeItem("sheaglobalCart");
       //window.localStorage.removeItem('sheaglobalCartCount');
@@ -263,7 +349,10 @@ export default new Vuex.Store({
 
     //expire cart storage
     saveExpireCart(state) {
-      window.localStorage.setItem("sheaglobalCartExpires", JSON.stringify(state.expirec));
+      window.localStorage.setItem(
+        "sheaglobalCartExpires",
+        JSON.stringify(state.expirec)
+      );
       //window.localStorage.setItem('sheaglobalCartCount', state.cartCount);
     },
 
@@ -316,6 +405,16 @@ export default new Vuex.Store({
     //Set shipping data
     SET_SHIPPING_DATA({ commit }, value) {
       commit("setShippingPrice", value);
+    },
+
+    //Set shipping data
+    SET_SUBTOTAL_DATA({ commit }, value) {
+      commit("setSubtotalPrice", value);
+    },
+
+    //Set voucher data
+    SET_VOUCHER_DATA({ commit }, value) {
+      commit("setVoucherValue", value);
     }
   }
 });

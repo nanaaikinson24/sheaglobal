@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Vue from "vue";
 import Router from "vue-router";
 
@@ -75,7 +76,11 @@ const router = new Router({
     { path: "/cart", name: "cart", component: Cart },
 
     //checkout
-    { path: "/checkout", name: "checkout", component: Checkout },
+    {
+      path: "/checkout",
+      name: "checkout",
+      component: Checkout
+    },
     { path: "/order/success", name: "paymentsuccess", component: Success },
     {
       path: "/order/cancelled",

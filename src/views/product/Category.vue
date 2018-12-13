@@ -1,120 +1,72 @@
 <template>
-    <div class="app-category">
-        <hero-banner :title="bannerTitle"></hero-banner>
+  <div class="app-category">
+    <hero-banner :title="bannerTitle"></hero-banner>
 
-        <div class="container">
-            
-            <div class="my-5" v-if="showMainContent">
+    <div class="container">
+      <div class="my-5" v-if="showMainContent">
+        <div class="row">
+          <div class="col-md-3 d-none d-md-block">
+            <products-sidebar></products-sidebar>
+          </div>
 
-                <div class="row">
-                    <div class="col-md-3 d-none d-md-block">
-                        <products-sidebar></products-sidebar>
-                    </div>
+          <div class="col-md-9">
+            <div v-if="contentLoaded">
+              <!-- has subcategories -->
+              <div
+                class="product-subcategory mb-5"
+                v-if="subcategoryData"
+                v-for="(subcategory, i) in subcategoryData"
+                :key="i"
+              >
+                <h5 class="shea-title pb-4" :id="subcategory.url_dash">{{ subcategory.name }}</h5>
+                <p>{{ contentToText(subcategory.description) }}</p>
 
-                    <div class="col-md-9">
-
-                        <div v-if="contentLoaded">
-                            <!-- has subcategories -->
-                            <div class="product-subcategory mb-5" v-if="subcategoryData" 
-                                v-for="(subcategory, i) in subcategoryData" :key="i" 
-                            >
-                                <h5 class="shea-title pb-4" :id="subcategory.url_dash">
-                                    {{ subcategory.name }}
-                                </h5>
-                                <p>{{ contentToText(subcategory.description) }}</p>
-
-                                <div class="category-product-carousel owl-carousel owl-theme">
-
-                                    <div class="product-container" v-for="(product, index) in subcategory.products" :key="index">
-                                        <router-link :to="'/product/' + product.url_dash + '/' + product.mask">
-                                            <div class="details">
-                                                <div class="product-img text-center">
-                                                
-                                                    <img :src="product.image" :alt="product.name">
-                                                    
-                                                </div>
-
-                                                <div class="related-product-content" >
-                                                    
-                                                    <div class="text-center mt-3">
-                                                        <p>
-                                                            {{ product.name }}
-                                                        </p>
-                                                        <p>AED {{ product.price }}</p>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-
-                                            <div class="ribbon" v-if="product.quantity < 1">
-                                                <small>Out of Stock</small>
-                                            </div>
-                                        </router-link>
-
-                                        
-                                    </div>
-
-                                </div>
-                            </div>
-                        
-
-                            <!-- no subcategories -->
-                            <div v-if="productsData.length > 0">
-                                <h5 class="shea-title pb-4">{{ categoryData.name }}</h5>
-                                <!-- <p>{{ contentToText(categoryData.description) }}</p> -->
-                                <p v-html="categoryData.description"></p>
-
-                                <div class="my-5">
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3 pro-cat" v-for="(product, index) in productsData" :key="index">
-                                            <router-link :to="'/product/' + product.url_dash + '/' + product.mask">
-                                                <div class="product-container" >
-                                                    <div class="details">
-                                                        <div class="product-img text-center">
-                                                            <img :src="product.image" :alt="product.name">
-                                                        </div>
-
-                                                        <div class="related-product-content" >
-                                                            <div class="text-center mt-3">
-                                                                <p>
-                                                                    {{ product.name }}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="ribbon" v-if="product.quantity < 1">
-                                                        <small>Out of Stock</small>
-                                                    </div>
-                                                </div>
-                                            </router-link>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Fake content -->
-                        <div v-if="!contentLoaded">
-                            <div v-for="(fake, i) in fakeItems" :key="i">
-                                <fake-content></fake-content>
-                                <hr>
-                            </div>
-                        </div>
-
-                    </div>
+                <div class="category-product-carousel owl-carousel owl-theme">
+                  <product-item
+                    :product="product"
+                    v-for="(product, index) in subcategory.products"
+                    :key="index"
+                  />
                 </div>
+              </div>
+
+              <!-- no subcategories -->
+              <div v-if="productsData.length > 0">
+                <h5 class="shea-title pb-4">{{ categoryData.name }}</h5>
+                <!-- <p>{{ contentToText(categoryData.description) }}</p> -->
+                <p v-html="categoryData.description"></p>
+
+                <div class="my-5">
+                  <div class="row">
+                    <div
+                      class="col-md-4 mb-3 pro-cat"
+                      v-for="(product, index) in productsData"
+                      :key="index"
+                    >
+                      <product-item :product="product"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-
-            <div class="row my-5" v-if="!showMainContent">
-                <error404></error404>
+            <!-- Fake content -->
+            <div v-if="!contentLoaded">
+              <div v-for="(fake, i) in fakeItems" :key="i">
+                <fake-content></fake-content>
+                <hr>
+              </div>
             </div>
+          </div>
         </div>
-        <app-callback></app-callback>
+      </div>
+
+      <div class="row my-5" v-if="!showMainContent">
+        <error404></error404>
+      </div>
     </div>
+    <app-callback></app-callback>
+  </div>
 </template>
 
 <script>
@@ -124,6 +76,7 @@ import ErrorComponent from "../../components/Error404.vue";
 import ProductCategoryFakeLoader from "../../components/ProductCategoryFakeLoader.vue";
 import ProductsSidebar from "../../components/ProductsSidebar.vue";
 import TopHeroBanner from "../../components/TopHeroBanner.vue";
+import ProductItem from "@/components/ProductItem.vue";
 
 export default {
   components: {
@@ -131,7 +84,8 @@ export default {
     appCallback: Callback,
     fakeContent: ProductCategoryFakeLoader,
     productsSidebar: ProductsSidebar,
-    heroBanner: TopHeroBanner
+    heroBanner: TopHeroBanner,
+    ProductItem
   },
   name: "Category",
   data() {
