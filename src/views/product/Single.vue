@@ -182,6 +182,8 @@ export default {
           if (response.data.status == 200) {
             let res = response.data;
 
+            console.log(res);
+
             this.relatedProducts = res.data.relatedproducts;
             this.title = res.data.name;
             this.productData = {

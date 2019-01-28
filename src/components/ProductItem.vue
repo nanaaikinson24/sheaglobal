@@ -1,6 +1,6 @@
 <template>
   <div class="product-container">
-    <router-link :to="'/product/' + product.url_dash + '/' + product.mask">
+    <a href="javascript:void(0)" @click="navigateToProduct(product)">
       <div class="details">
         <div class="product-img text-center">
           <img :src="product.image" :alt="product.name">
@@ -24,7 +24,7 @@
       <div class="ribbon" v-if="product.quantity < 1">
         <small>Out of Stock</small>
       </div>
-    </router-link>
+    </a>
   </div>
 </template>
 
@@ -46,6 +46,18 @@ export default {
         return false;
       }
       return false;
+    },
+
+    // Navigate to product page
+    navigateToProduct(product) {
+      let dash;
+      if (_.has(product, "dash")) {
+        dash = product.dash;
+      } else {
+        dash = product.url_dash;
+      }
+
+      this.$router.push("/product/" + dash + "/" + product.mask);
     }
   }
 };

@@ -512,8 +512,7 @@ export default {
             // Set shipping
             if (_.has(validatedCoupon, "shipping")) {
               this.$store.commit("setShippingPrice", validatedCoupon.shipping);
-              console.log(this.$store.state.shipping);
-              console.log(this.$store.state);
+
               // this.$store.dispatch(
               //   "SET_SHIPPING_DATA",
               //   validatedCoupon.shipping
