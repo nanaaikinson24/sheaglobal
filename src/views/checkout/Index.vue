@@ -488,9 +488,10 @@ export default {
             return false;
           }
 
-          const validatedCoupon = voucherValidator(res.code);
+          // Validate coupon
+          let validatedCoupon = voucherValidator(res.code);
 
-          if (validatedCoupon.status == 400) {
+          if (validatedCoupon.status === 400) {
             $(this.$refs.voucherinput)
               .closest(".input-group")
               .after(
@@ -504,13 +505,19 @@ export default {
               });
             }, 2500);
             return false;
-          } else {
+          }
+
+          // Status === 200
+          if (validatedCoupon.status === 200) {
             // Set shipping
-            if (validatedCoupon.shipping) {
-              this.$store.dispatch(
-                "SET_SHIPPING_DATA",
-                validatedCoupon.shipping
-              );
+            if (_.has(validatedCoupon, "shipping")) {
+              this.$store.commit("setShippingPrice", validatedCoupon.shipping);
+              console.log(this.$store.state.shipping);
+              console.log(this.$store.state);
+              // this.$store.dispatch(
+              //   "SET_SHIPPING_DATA",
+              //   validatedCoupon.shipping
+              // );
 
               $(this.$refs.voucherinput)
                 .closest(".input-group")
