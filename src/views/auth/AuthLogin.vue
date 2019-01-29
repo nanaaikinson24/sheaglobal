@@ -1,42 +1,57 @@
 <template>
-    <div class="app-login-comp">
-        <div class="mb-3">
-            <h4>Returning Customer?</h4>
-            <p>Enter your email address and password below to login</p>
-        </div>
-
-        <div class="loginMsg mb-3"></div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <input type="email" name="email" id="email" class="form-control"
-                    placeholder="Email" v-model="email" v-validate="'required|email'"
-                >
-                <span class="text-danger">{{ errors.first('email') }}</span>
-            </div>
-
-            <div class="form-group">
-                <input type="password" name="password" id="password" class="form-control"
-                    placeholder="Password" v-model="password" v-validate="'required'"
-                >
-                <span class="text-danger">{{ errors.first('password') }}</span>
-            </div>
-
-            <div class="form-group d-flex">
-                <a href="javascript:void(0)" @click="$emit('changeAuthState', 'forget-password')">Forgot Password?</a>
-
-                <a href="javascript:void(0)" class="ml-md-auto" @click="$emit('changeAuthState', 'activate-link')">
-                    Resend verification email.
-                </a>
-            </div>
-
-            <div class="form-group">
-                <button class="btn btn-success btn-block" @click.prevent="login($event)">
-                    Login
-                </button>
-            </div>
-        </form>
+  <div class="app-login-comp">
+    <div class="mb-3">
+      <h4>Returning Customer?</h4>
+      <p>Enter your email address and password below to login</p>
     </div>
+
+    <div class="loginMsg mb-3"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <input
+          type="email"
+          name="email"
+          id="email"
+          class="form-control"
+          placeholder="Email"
+          v-model="email"
+          v-validate="'required|email'"
+        >
+        <span class="text-danger">{{ errors.first('email') }}</span>
+      </div>
+
+      <div class="form-group">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          class="form-control"
+          placeholder="Password"
+          v-model="password"
+          v-validate="'required'"
+        >
+        <span class="text-danger">{{ errors.first('password') }}</span>
+      </div>
+
+      <div class="form-group d-flex">
+        <a
+          href="javascript:void(0)"
+          @click="$emit('changeAuthState', 'forget-password')"
+        >Forgot Password?</a>
+        
+        <a
+          href="javascript:void(0)"
+          class="ml-md-auto"
+          @click="$emit('changeAuthState', 'activate-link')"
+        >Resend verification email.</a>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-success btn-block" @click.prevent="login($event)">Login</button>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -79,6 +94,7 @@ export default {
                   mask: res.data.mask
                 };
                 this.$store.dispatch("SET_USER_DATA", userData);
+                this.$store.commit("setAccessToken", res.data.access_token);
                 window.localStorage.setItem(
                   "userData",
                   JSON.stringify(userData)

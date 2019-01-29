@@ -22,7 +22,8 @@ export default new Vuex.Store({
     cities: cities,
     expirec: null,
     vouchercode: "",
-    subtotalprice: 0
+    subtotalprice: 0,
+    access_token: ""
   },
 
   //Getters
@@ -187,6 +188,10 @@ export default new Vuex.Store({
 
     setShippingPrice(state, value) {
       state.shipping = value;
+    },
+
+    setAccessToken(state, value) {
+      state.access_token = value;
     },
 
     setSubtotalPrice(state, value) {

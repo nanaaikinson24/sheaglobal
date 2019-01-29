@@ -162,9 +162,11 @@ router.beforeEach((to, from, next) => {
             phone: res.phone
           };
           store.commit("setUserDataOnly", {
+            email: res.data.em,
             firstname: res.fname,
             lastname: res.lname,
-            mask: res.usermask
+            mask: res.usermask,
+            access_token: store.state.access_token
           });
         } else {
           delivery = {
