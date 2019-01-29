@@ -531,7 +531,6 @@ export default {
 
             // Set subtotal
             if (validatedCoupon.subtotal) {
-              console.log(validatedCoupon.subtotal);
               this.$store.commit("setSubtotalPrice", validatedCoupon.subtotal);
 
               $(this.$refs.voucherinput)

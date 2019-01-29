@@ -163,7 +163,8 @@ router.beforeEach((to, from, next) => {
           };
           store.commit("setUserDataOnly", {
             firstname: res.fname,
-            lastname: res.lname
+            lastname: res.lname,
+            mask: res.usermask
           });
         } else {
           delivery = {
